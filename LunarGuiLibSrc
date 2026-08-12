@@ -38,10 +38,9 @@ LunarLib.Themes = {
 
 local function applyCleanTextSettings(obj)
     if obj:IsA("TextLabel") or obj:IsA("TextButton") or obj:IsA("TextBox") then
-        obj.Font = Enum.Font.GothamBold -- Reverted to Bold
+        obj.Font = Enum.Font.GothamBold 
         obj.TextStrokeTransparency = 1 
         
-        -- Add Neon Glow Stroke to Text directly
         local textStroke = Instance.new("UIStroke")
         textStroke.Name = "NeonGlow"
         textStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Contextual
@@ -53,7 +52,7 @@ end
 
 local function makeStroke(parent)
     local stroke = Instance.new("UIStroke")
-    stroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Contextual -- Contextual fixes border clipping/breaking
+    stroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Contextual 
     stroke.Transparency = 0.6
     stroke.Thickness = 1
     stroke.Parent = parent
@@ -124,7 +123,6 @@ function LunarLib:CreateWindow(options)
                 pcall(function() 
                     if obj:IsA("TextLabel") or obj:IsA("TextBox") or obj:IsA("TextButton") then 
                         obj.TextColor3 = t.Text 
-                        -- Update Neon Glow Color
                         local glow = obj:FindFirstChild("NeonGlow")
                         if glow then glow.Color = t.Main end
                     else 
@@ -664,7 +662,6 @@ function LunarLib:CreateWindow(options)
             return Element
         end
 
-        -- NEW: Color Picker Implementation
         function Tab:CreateColorPicker(opts)
             local title = opts.Name or "Color Picker"
             local default = opts.Default or Color3.fromRGB(255, 255, 255)
@@ -711,7 +708,7 @@ function LunarLib:CreateWindow(options)
             local wheel = Instance.new("ImageButton")
             wheel.Size = UDim2.new(0, 100, 0, 100)
             wheel.Position = UDim2.new(0, 10, 0, 10)
-            wheel.Image = "rbxassetid://6020299385" -- Circle HSV Wheel
+            wheel.Image = "rbxassetid://6020299385" 
             wheel.BackgroundTransparency = 1
             wheel.Parent = cpFrame
 
@@ -865,32 +862,34 @@ function LunarLib:CreateWindow(options)
 
         configNameBox = SettingsTab:CreateTextbox({
             Name = "Config Name",
-            Placeholder = "Enter config name..."
+            Placeholder = "Enter new config name..."
         })
 
+        -- Reusable config saving function
+        local function saveConfigData(name)
+            local data = {}
+            for flagName, element in pairs(self.Flags) do
+                if flagName ~= "Select Theme" and flagName ~= "Config Name" and flagName ~= "Select Config" then
+                    if typeof(element.Value) == "Color3" then
+                        data[flagName] = {R = element.Value.R, G = element.Value.G, B = element.Value.B, IsColor3 = true}
+                    else
+                        data[flagName] = element.Value
+                    end
+                end
+            end
+            if writefile then
+                writefile(self.Folder .. "/" .. name .. ".json", HttpService:JSONEncode(data))
+            end
+        end
+
         SettingsTab:CreateButton({
-            Name = "Save Config",
+            Name = "Save New Config",
             Callback = function()
                 local name = configNameBox.Value
                 if name == "" then return end
-                
-                local data = {}
-                for flagName, element in pairs(self.Flags) do
-                    if flagName ~= "Select Theme" and flagName ~= "Config Name" and flagName ~= "Select Config" then
-                        -- Handle Color3 Serialization to prevent JSON crash
-                        if typeof(element.Value) == "Color3" then
-                            data[flagName] = {R = element.Value.R, G = element.Value.G, B = element.Value.B, IsColor3 = true}
-                        else
-                            data[flagName] = element.Value
-                        end
-                    end
-                end
-                
-                if writefile then
-                    writefile(self.Folder .. "/" .. name .. ".json", HttpService:JSONEncode(data))
-                    configDropdown:Refresh(getConfigs())
-                    configDropdown:Set(name)
-                end
+                saveConfigData(name)
+                configDropdown:Refresh(getConfigs())
+                configDropdown:Set(name)
             end
         })
 
@@ -915,7 +914,6 @@ function LunarLib:CreateWindow(options)
                         for flagName, value in pairs(decoded) do
                             if self.Flags[flagName] then
                                 pcall(function()
-                                    -- Handle Color3 Deserialization
                                     if type(value) == "table" and value.IsColor3 then
                                         self.Flags[flagName]:Set(Color3.new(value.R, value.G, value.B))
                                     else
@@ -926,6 +924,16 @@ function LunarLib:CreateWindow(options)
                         end
                     end
                 end
+            end
+        })
+
+        -- NEW: Overwrite Config Feature
+        SettingsTab:CreateButton({
+            Name = "Overwrite Current Config",
+            Callback = function()
+                local name = configDropdown.Value
+                if name == "None" or name == nil or name == "" then return end
+                saveConfigData(name)
             end
         })
 
@@ -949,6 +957,9 @@ function LunarLib:CreateWindow(options)
                 ScreenGui:Destroy()
             end
         })
+        
+        -- BUG FIX: Ensure all the buttons we just created get their initial theme colors mapped properly!
+        self:ApplyTheme()
         
         return SettingsTab
     end
