@@ -152,19 +152,21 @@ function LunarLib:CreateWindow(options)
     Title.Position = UDim2.new(0, 12, 0, 0)
     Title.BackgroundTransparency = 1
     Title.Text = WindowTitle
-    Title.Font = Enum.Font.SourceSansBold
-    Title.TextSize = 16
+    Title.Font = Enum.Font.ArialBold
+    Title.TextSize = 15
     Title.TextXAlignment = Enum.TextXAlignment.Left
     Title.Parent = Header
     table.insert(Window.ThemedElements.Text, Title)
 
-    local MinimizeBtn = Instance.new("ImageButton")
-    MinimizeBtn.Size = UDim2.new(0, 18, 0, 18)
-    MinimizeBtn.Position = UDim2.new(1, -28, 0.5, -9)
+    local MinimizeBtn = Instance.new("TextButton")
+    MinimizeBtn.Size = UDim2.new(0, 20, 0, 20)
+    MinimizeBtn.Position = UDim2.new(1, -25, 0.5, -10)
     MinimizeBtn.BackgroundTransparency = 1
-    MinimizeBtn.Image = "rbxassetid://10874256658"
+    MinimizeBtn.Text = "🌙"
+    MinimizeBtn.Font = Enum.Font.Arial
+    MinimizeBtn.TextSize = 14
     MinimizeBtn.Parent = Header
-    table.insert(Window.ThemedElements.SubText, MinimizeBtn)
+    table.insert(Window.ThemedElements.Text, MinimizeBtn)
 
     local TabContainer = Instance.new("ScrollingFrame")
     TabContainer.Size = UDim2.new(1, -20, 0, 30)
@@ -186,18 +188,44 @@ function LunarLib:CreateWindow(options)
     PageContainer.BackgroundTransparency = 1
     PageContainer.Parent = MainFrame
 
-    local minimized = false
+    -- Draggable Reopen Button (Circle)
+    local OpenButton = Instance.new("TextButton")
+    OpenButton.Size = UDim2.new(0, 40, 0, 40)
+    OpenButton.Position = UDim2.new(0, 20, 0, 20)
+    OpenButton.BackgroundColor3 = Window.CurrentTheme.Bg
+    OpenButton.BackgroundTransparency = 0.05
+    OpenButton.Text = "🌙"
+    OpenButton.Font = Enum.Font.Arial
+    OpenButton.TextSize = 20
+    OpenButton.Visible = false
+    OpenButton.Active = true
+    OpenButton.Parent = ScreenGui
+    
+    local OpenCorner = Instance.new("UICorner")
+    OpenCorner.CornerRadius = UDim.new(1, 0)
+    OpenCorner.Parent = OpenButton
+    
+    local OpenStroke = Instance.new("UIStroke")
+    OpenStroke.Transparency = 0.6
+    OpenStroke.Thickness = 1
+    OpenStroke.Parent = OpenButton
+
+    table.insert(Window.ThemedElements.Bg, OpenButton)
+    table.insert(Window.ThemedElements.Text, OpenButton)
+    table.insert(Window.ThemedElements.StrokeMain, OpenStroke)
+
+    -- Make the circular button draggable around the screen
+    makeDraggable(OpenButton, OpenButton)
+
+    -- Minimize/Open Logic
     MinimizeBtn.MouseButton1Click:Connect(function()
-        minimized = not minimized
-        if minimized then
-            TweenService:Create(MainFrame, TweenInfo.new(0.3, Enum.EasingStyle.Quart), {Size = UDim2.new(0, WindowSize.X.Offset, 0, 45)}):Play()
-            TabContainer.Visible = false
-            PageContainer.Visible = false
-        else
-            TweenService:Create(MainFrame, TweenInfo.new(0.3, Enum.EasingStyle.Quart), {Size = WindowSize}):Play()
-            TabContainer.Visible = true
-            PageContainer.Visible = true
-        end
+        MainFrame.Visible = false
+        OpenButton.Visible = true
+    end)
+
+    OpenButton.MouseButton1Click:Connect(function()
+        MainFrame.Visible = true
+        OpenButton.Visible = false
     end)
 
     Window.ApplyTheme(Window)
@@ -209,8 +237,8 @@ function LunarLib:CreateWindow(options)
         TabBtn.Size = UDim2.new(0, 75, 1, 0)
         TabBtn.BackgroundTransparency = 0.3
         TabBtn.Text = name
-        TabBtn.Font = Enum.Font.SourceSansBold
-        TabBtn.TextSize = 14
+        TabBtn.Font = Enum.Font.ArialBold
+        TabBtn.TextSize = 13
         TabBtn.Parent = TabContainer
         Instance.new("UICorner", TabBtn).CornerRadius = UDim.new(0, 6)
         local TabStroke = Instance.new("UIStroke", TabBtn)
@@ -259,8 +287,8 @@ function LunarLib:CreateWindow(options)
             BtnFrame.Size = UDim2.new(1, 0, 0, 30)
             BtnFrame.BackgroundTransparency = 0.2
             BtnFrame.Text = title
-            BtnFrame.Font = Enum.Font.SourceSans
-            BtnFrame.TextSize = 14
+            BtnFrame.Font = Enum.Font.Arial
+            BtnFrame.TextSize = 13
             BtnFrame.Parent = Page
             Instance.new("UICorner", BtnFrame).CornerRadius = UDim.new(0, 6)
             local stroke = Instance.new("UIStroke", BtnFrame)
@@ -294,8 +322,8 @@ function LunarLib:CreateWindow(options)
             box.BackgroundTransparency = 1
             box.Text = ""
             box.PlaceholderText = placeholder
-            box.Font = Enum.Font.SourceSans
-            box.TextSize = 14
+            box.Font = Enum.Font.Arial
+            box.TextSize = 13
             box.TextXAlignment = Enum.TextXAlignment.Left
             box.Parent = boxFrame
             table.insert(Window.ThemedElements.Text, box)
@@ -327,8 +355,8 @@ function LunarLib:CreateWindow(options)
             tglBtn.BackgroundTransparency = 0.2
             tglBtn.Text = "  " .. title
             tglBtn.TextXAlignment = Enum.TextXAlignment.Left
-            tglBtn.Font = Enum.Font.SourceSans
-            tglBtn.TextSize = 14
+            tglBtn.Font = Enum.Font.Arial
+            tglBtn.TextSize = 13
             tglBtn.Parent = Page
             Instance.new("UICorner", tglBtn).CornerRadius = UDim.new(0, 6)
             local stroke = Instance.new("UIStroke", tglBtn)
@@ -407,8 +435,8 @@ function LunarLib:CreateWindow(options)
             label.Position = UDim2.new(0, 8, 0, 2)
             label.BackgroundTransparency = 1
             label.Text = title
-            label.Font = Enum.Font.SourceSans
-            label.TextSize = 14
+            label.Font = Enum.Font.Arial
+            label.TextSize = 13
             label.TextXAlignment = Enum.TextXAlignment.Left
             label.Parent = sliderFrame
             table.insert(Window.ThemedElements.Text, label)
@@ -418,8 +446,8 @@ function LunarLib:CreateWindow(options)
             valLabel.Position = UDim2.new(1, -48, 0, 2)
             valLabel.BackgroundTransparency = 1
             valLabel.Text = tostring(default)
-            valLabel.Font = Enum.Font.SourceSans
-            valLabel.TextSize = 13
+            valLabel.Font = Enum.Font.Arial
+            valLabel.TextSize = 12
             valLabel.TextXAlignment = Enum.TextXAlignment.Right
             valLabel.Parent = sliderFrame
             table.insert(Window.ThemedElements.SubText, valLabel)
@@ -491,8 +519,8 @@ function LunarLib:CreateWindow(options)
             ddBtn.BackgroundTransparency = 0.2
             ddBtn.Text = "  " .. title .. ": " .. tostring(default)
             ddBtn.TextXAlignment = Enum.TextXAlignment.Left
-            ddBtn.Font = Enum.Font.SourceSans
-            ddBtn.TextSize = 14
+            ddBtn.Font = Enum.Font.Arial
+            ddBtn.TextSize = 13
             ddBtn.Parent = Page
             Instance.new("UICorner", ddBtn).CornerRadius = UDim.new(0, 6)
             local stroke = Instance.new("UIStroke", ddBtn)
@@ -506,8 +534,8 @@ function LunarLib:CreateWindow(options)
             arrow.Position = UDim2.new(1, -25, 0, 0)
             arrow.BackgroundTransparency = 1
             arrow.Text = "▼"
-            arrow.Font = Enum.Font.SourceSans
-            arrow.TextSize = 12
+            arrow.Font = Enum.Font.Arial
+            arrow.TextSize = 11
             arrow.Parent = ddBtn
             table.insert(Window.ThemedElements.SubText, arrow)
 
@@ -565,8 +593,8 @@ function LunarLib:CreateWindow(options)
                     optBtn.Size = UDim2.new(1, -8, 0, 24)
                     optBtn.BackgroundTransparency = 1
                     optBtn.Text = "  " .. tostring(opt)
-                    optBtn.Font = Enum.Font.SourceSans
-                    optBtn.TextSize = 13
+                    optBtn.Font = Enum.Font.Arial
+                    optBtn.TextSize = 12
                     optBtn.TextXAlignment = Enum.TextXAlignment.Left
                     optBtn.Parent = listFrame
                     table.insert(Window.ThemedElements.Text, optBtn)
@@ -672,6 +700,27 @@ function LunarLib:CreateWindow(options)
             Name = "Select Config",
             Options = getConfigs(),
             Callback = function() end
+        })
+
+        SettingsTab:CreateButton({
+            Name = "Overwrite Config",
+            Callback = function()
+                local name = configDropdown.Value
+                if name == "None" or name == nil or name == "" then return end
+                
+                local data = {}
+                for flagName, element in pairs(self.Flags) do
+                    if flagName ~= "Select Theme" and flagName ~= "Config Name" and flagName ~= "Select Config" then
+                        data[flagName] = element.Value
+                    end
+                end
+                
+                if writefile then
+                    writefile(self.Folder .. "/" .. name .. ".json", HttpService:JSONEncode(data))
+                    configDropdown:Refresh(getConfigs())
+                    configDropdown:Set(name)
+                end
+            end
         })
 
         SettingsTab:CreateButton({
