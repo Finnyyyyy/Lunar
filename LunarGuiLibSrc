@@ -196,7 +196,7 @@ function LunarLib:CreateWindow(options)
     MinimizeBtn.Size = UDim2.new(0, 20, 0, 20)
     MinimizeBtn.Position = UDim2.new(1, -25, 0.5, -10)
     MinimizeBtn.BackgroundTransparency = 1
-    MinimizeBtn.Text = "🌙"
+    MinimizeBtn.Text = "ðŸŒ™"
     MinimizeBtn.TextSize = 14
     MinimizeBtn.Parent = Header
     applyCleanTextSettings(MinimizeBtn)
@@ -227,7 +227,7 @@ function LunarLib:CreateWindow(options)
     OpenButton.Position = UDim2.new(0, 20, 0, 20)
     OpenButton.BackgroundColor3 = Window.CurrentTheme.Bg
     OpenButton.BackgroundTransparency = 0.05
-    OpenButton.Text = "🌙"
+    OpenButton.Text = "ðŸŒ™"
     OpenButton.TextSize = 20
     OpenButton.Visible = false
     OpenButton.Active = true
@@ -568,7 +568,7 @@ function LunarLib:CreateWindow(options)
             arrow.Size = UDim2.new(0, 20, 1, 0)
             arrow.Position = UDim2.new(1, -25, 0, 0)
             arrow.BackgroundTransparency = 1
-            arrow.Text = "▼"
+            arrow.Text = "â–¼"
             arrow.TextSize = 11
             arrow.Parent = ddBtn
             applyCleanTextSettings(arrow)
@@ -599,7 +599,7 @@ function LunarLib:CreateWindow(options)
 
             local function close()
                 isOpen = false
-                arrow.Text = "▼"
+                arrow.Text = "â–¼"
                 local tween = TweenService:Create(listFrame, animInfo, {Size = UDim2.new(1, 0, 0, 0)})
                 tween:Play()
                 tween.Completed:Once(function() if not isOpen then listFrame.Visible = false end end)
@@ -607,7 +607,7 @@ function LunarLib:CreateWindow(options)
 
             ddBtn.MouseButton1Click:Connect(function()
                 isOpen = not isOpen
-                arrow.Text = isOpen and "▲" or "▼"
+                arrow.Text = isOpen and "â–²" or "â–¼"
                 if isOpen then
                     listFrame.Size = UDim2.new(1, 0, 0, 0)
                     listFrame.Visible = true
