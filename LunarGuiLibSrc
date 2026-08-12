@@ -196,7 +196,7 @@ function LunarLib:CreateWindow(options)
     MinimizeBtn.Size = UDim2.new(0, 20, 0, 20)
     MinimizeBtn.Position = UDim2.new(1, -25, 0.5, -10)
     MinimizeBtn.BackgroundTransparency = 1
-    MinimizeBtn.Text = "ðŸŒ™"
+    MinimizeBtn.Text = "🌙"
     MinimizeBtn.TextSize = 14
     MinimizeBtn.Parent = Header
     applyCleanTextSettings(MinimizeBtn)
@@ -227,7 +227,7 @@ function LunarLib:CreateWindow(options)
     OpenButton.Position = UDim2.new(0, 20, 0, 20)
     OpenButton.BackgroundColor3 = Window.CurrentTheme.Bg
     OpenButton.BackgroundTransparency = 0.05
-    OpenButton.Text = "ðŸŒ™"
+    OpenButton.Text = "🌙"
     OpenButton.TextSize = 20
     OpenButton.Visible = false
     OpenButton.Active = true
