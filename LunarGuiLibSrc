@@ -1,4 +1,4 @@
-local LunarLib = {}
+Local LunarLib = {}
 local TweenService = game:GetService("TweenService")
 local UserInputService = game:GetService("UserInputService")
 local HttpService = game:GetService("HttpService")
@@ -38,8 +38,7 @@ LunarLib.Themes = {
 
 local function applyCleanTextSettings(obj)
     if obj:IsA("TextLabel") or obj:IsA("TextButton") or obj:IsA("TextBox") then
-        -- FIXED: Arial is replaced with GothamSemibold for a modern, clean look
-        obj.Font = Enum.Font.GothamSemibold 
+        obj.Font = Enum.Font.Arial
         obj.TextStrokeTransparency = 1
     end
 end
@@ -203,6 +202,7 @@ function LunarLib:CreateWindow(options)
     PageContainer.BackgroundTransparency = 1
     PageContainer.Parent = MainFrame
 
+    -- Draggable Reopen Button (Circle)
     local OpenButton = Instance.new("TextButton")
     OpenButton.Size = UDim2.new(0, 40, 0, 40)
     OpenButton.Position = UDim2.new(0, 20, 0, 20)
@@ -368,7 +368,6 @@ function LunarLib:CreateWindow(options)
             tglBtn.Text = "  " .. title
             tglBtn.TextXAlignment = Enum.TextXAlignment.Left
             tglBtn.TextSize = 13
-            tglBtn.ClipsDescendants = true 
             tglBtn.Parent = Page
             applyCleanTextSettings(tglBtn)
 
@@ -382,7 +381,7 @@ function LunarLib:CreateWindow(options)
 
             local switchBg = Instance.new("Frame")
             switchBg.Size = UDim2.new(0, 32, 0, 16)
-            switchBg.Position = UDim2.new(1, -40, 0, 7)
+            switchBg.Position = UDim2.new(1, -40, 0.5, -8)
             switchBg.BackgroundColor3 = Color3.fromRGB(25, 22, 35)
             switchBg.Parent = tglBtn
             Instance.new("UICorner", switchBg).CornerRadius = UDim.new(1, 0)
@@ -423,98 +422,6 @@ function LunarLib:CreateWindow(options)
             Window:ApplyTheme()
             fire()
             
-            -- ==========================================
-            -- NEW COLOR PICKER LOGIC 
-            -- ==========================================
-            if opts.ColorPicker then
-                local colorVal = opts.Color or Color3.fromRGB(255, 255, 255)
-                local cFlag = opts.ColorFlag or flag .. "Color"
-                local cCallback = opts.ColorCallback or function() end
-
-                local colorPreviewBtn = Instance.new("TextButton")
-                colorPreviewBtn.Size = UDim2.new(0, 24, 0, 16)
-                colorPreviewBtn.Position = UDim2.new(1, -72, 0, 7)
-                colorPreviewBtn.BackgroundColor3 = colorVal
-                colorPreviewBtn.Text = ""
-                colorPreviewBtn.Parent = tglBtn
-                Instance.new("UICorner", colorPreviewBtn).CornerRadius = UDim.new(0, 4)
-                makeStroke(colorPreviewBtn)
-
-                local pickerFrame = Instance.new("Frame")
-                pickerFrame.Size = UDim2.new(1, 0, 0, 70)
-                pickerFrame.Position = UDim2.new(0, 0, 0, 30)
-                pickerFrame.BackgroundTransparency = 1
-                pickerFrame.Visible = false
-                pickerFrame.Parent = tglBtn
-
-                local isOpen = false
-                colorPreviewBtn.MouseButton1Click:Connect(function()
-                    isOpen = not isOpen
-                    if isOpen then
-                        TweenService:Create(tglBtn, TweenInfo.new(0.2), {Size = UDim2.new(1, 0, 0, 100)}):Play()
-                        pickerFrame.Visible = true
-                    else
-                        TweenService:Create(tglBtn, TweenInfo.new(0.2), {Size = UDim2.new(1, 0, 0, 30)}):Play()
-                        task.delay(0.2, function() if not isOpen then pickerFrame.Visible = false end end)
-                    end
-                end)
-
-                local r, g, b = colorVal.R, colorVal.G, colorVal.B
-                local function updateColor()
-                    local newCol = Color3.new(r, g, b)
-                    colorPreviewBtn.BackgroundColor3 = newCol
-                    Window.Flags[cFlag].Value = newCol
-                    cCallback(newCol)
-                end
-
-                local function makeMiniSlider(yPos, c, startVal, updateFunc)
-                    local bg = Instance.new("Frame")
-                    bg.Size = UDim2.new(1, -20, 0, 6)
-                    bg.Position = UDim2.new(0, 10, 0, yPos)
-                    bg.BackgroundColor3 = Color3.fromRGB(35, 30, 45)
-                    bg.Parent = pickerFrame
-                    Instance.new("UICorner", bg).CornerRadius = UDim.new(1, 0)
-
-                    local fill = Instance.new("Frame")
-                    fill.Size = UDim2.new(startVal, 0, 1, 0)
-                    fill.BackgroundColor3 = c
-                    fill.Parent = bg
-                    Instance.new("UICorner", fill).CornerRadius = UDim.new(1, 0)
-
-                    local dragging = false
-                    local function update(input)
-                        local pos = math.clamp((input.Position.X - bg.AbsolutePosition.X) / bg.AbsoluteSize.X, 0, 1)
-                        fill.Size = UDim2.new(pos, 0, 1, 0)
-                        updateFunc(pos)
-                    end
-                    bg.InputBegan:Connect(function(input)
-                        if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
-                            dragging = true; update(input)
-                        end
-                    end)
-                    UserInputService.InputEnded:Connect(function(input)
-                        if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then dragging = false end
-                    end)
-                    UserInputService.InputChanged:Connect(function(input)
-                        if dragging and (input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch) then update(input) end
-                    end)
-                    return function(val) fill.Size = UDim2.new(val, 0, 1, 0) end
-                end
-
-                local setR = makeMiniSlider(15, Color3.fromRGB(255, 75, 75), r, function(v) r = v; updateColor() end)
-                local setG = makeMiniSlider(35, Color3.fromRGB(75, 255, 75), g, function(v) g = v; updateColor() end)
-                local setB = makeMiniSlider(55, Color3.fromRGB(75, 75, 255), b, function(v) b = v; updateColor() end)
-
-                local CElement = {Value = colorVal}
-                function CElement:Set(val)
-                    r, g, b = val.R, val.G, val.B
-                    setR(r); setG(g); setB(b)
-                    updateColor()
-                end
-                Window.Flags[cFlag] = CElement
-            end
-            -- ==========================================
-
             return Element
         end
 
@@ -795,13 +702,7 @@ function LunarLib:CreateWindow(options)
                 local data = {}
                 for flagName, element in pairs(self.Flags) do
                     if flagName ~= "Select Theme" and flagName ~= "Config Name" and flagName ~= "Select Config" then
-                        -- FIXED: Safely save Color3 as JSON!
-                        local val = element.Value
-                        if typeof(val) == "Color3" then
-                            data[flagName] = {IsColor = true, R = val.R, G = val.G, B = val.B}
-                        else
-                            data[flagName] = val
-                        end
+                        data[flagName] = element.Value
                     end
                 end
                 
@@ -828,13 +729,7 @@ function LunarLib:CreateWindow(options)
                 local data = {}
                 for flagName, element in pairs(self.Flags) do
                     if flagName ~= "Select Theme" and flagName ~= "Config Name" and flagName ~= "Select Config" then
-                        -- FIXED: Safely save Color3 as JSON!
-                        local val = element.Value
-                        if typeof(val) == "Color3" then
-                            data[flagName] = {IsColor = true, R = val.R, G = val.G, B = val.B}
-                        else
-                            data[flagName] = val
-                        end
+                        data[flagName] = element.Value
                     end
                 end
                 
@@ -861,12 +756,7 @@ function LunarLib:CreateWindow(options)
                         for flagName, value in pairs(decoded) do
                             if self.Flags[flagName] then
                                 pcall(function()
-                                    -- FIXED: Load Color3 from JSON!
-                                    if type(value) == "table" and value.IsColor then
-                                        self.Flags[flagName]:Set(Color3.new(value.R, value.G, value.B))
-                                    else
-                                        self.Flags[flagName]:Set(value)
-                                    end
+                                    self.Flags[flagName]:Set(value)
                                 end)
                             end
                         end
@@ -903,4 +793,3 @@ function LunarLib:CreateWindow(options)
 end
 
 return LunarLib
-
