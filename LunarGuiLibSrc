@@ -94,7 +94,21 @@ function LunarLib:CreateWindow(options)
         for _, obj in ipairs(self.ThemedElements.Bg) do if obj then pcall(function() obj.BackgroundColor3 = t.Bg end) end end
         for _, obj in ipairs(self.ThemedElements.Main) do if obj then pcall(function() if obj:IsA("TextLabel") or obj:IsA("TextButton") or obj:IsA("TextBox") then obj.TextColor3 = t.Main else obj.BackgroundColor3 = t.Main end end) end end
         for _, obj in ipairs(self.ThemedElements.Text) do if obj then pcall(function() if obj:IsA("TextLabel") or obj:IsA("TextBox") or obj:IsA("TextButton") then obj.TextColor3 = t.Text else obj.BackgroundColor3 = t.Text end end) end end
-        for _, obj in ipairs(self.ThemedElements.SubText) do if obj then pcall(function() if obj:IsA("TextLabel") or obj:IsA("TextButton") or obj:IsA("TextBox") then obj.TextColor3 = t.SubText else obj.BackgroundColor3 = t.SubText end end) end end
+        
+        for _, obj in ipairs(self.ThemedElements.SubText) do 
+            if obj then 
+                pcall(function() 
+                    if obj:IsA("TextLabel") or obj:IsA("TextButton") or obj:IsA("TextBox") then 
+                        obj.TextColor3 = t.SubText 
+                    elseif obj:IsA("ImageLabel") or obj:IsA("ImageButton") then
+                        obj.ImageColor3 = t.SubText
+                    else 
+                        obj.BackgroundColor3 = t.SubText 
+                    end 
+                end) 
+            end 
+        end
+        
         for _, obj in ipairs(self.ThemedElements.StrokeMain) do if obj then pcall(function() obj.Color = t.Main end) end end
         
         for _, data in ipairs(self.ActiveToggles) do
@@ -143,13 +157,11 @@ function LunarLib:CreateWindow(options)
     Title.Parent = Header
     table.insert(Window.ThemedElements.Text, Title)
 
-    local MinimizeBtn = Instance.new("TextButton")
-    MinimizeBtn.Size = UDim2.new(0, 24, 0, 24)
-    MinimizeBtn.Position = UDim2.new(1, -30, 0.5, -12)
+    local MinimizeBtn = Instance.new("ImageButton")
+    MinimizeBtn.Size = UDim2.new(0, 18, 0, 18)
+    MinimizeBtn.Position = UDim2.new(1, -28, 0.5, -9)
     MinimizeBtn.BackgroundTransparency = 1
-    MinimizeBtn.Text = "☾"
-    MinimizeBtn.Font = Enum.Font.GothamBold
-    MinimizeBtn.TextSize = 14
+    MinimizeBtn.Image = "rbxassetid://10874256658"
     MinimizeBtn.Parent = Header
     table.insert(Window.ThemedElements.SubText, MinimizeBtn)
 
