@@ -7,34 +7,50 @@ local Players = game:GetService("Players")
 local Player = Players.LocalPlayer
 
 LunarLib.Themes = {
-    {Name = "Midnight Blue", Bg = Color3.fromRGB(10, 14, 26), Main = Color3.fromRGB(60, 130, 255), Accent = Color3.fromRGB(100, 170, 255), Text = Color3.fromRGB(210, 235, 255), SubText = Color3.fromRGB(120, 150, 190)},
-    {Name = "Midnight", Bg = Color3.fromRGB(15, 13, 22), Main = Color3.fromRGB(120, 95, 205), Accent = Color3.fromRGB(135, 105, 235), Text = Color3.fromRGB(235, 230, 245), SubText = Color3.fromRGB(140, 130, 165)},
-    {Name = "Purple", Bg = Color3.fromRGB(20, 10, 30), Main = Color3.fromRGB(148, 0, 211), Accent = Color3.fromRGB(186, 85, 211), Text = Color3.fromRGB(250, 240, 255), SubText = Color3.fromRGB(170, 150, 190)},
-    {Name = "Violet", Bg = Color3.fromRGB(15, 5, 25), Main = Color3.fromRGB(238, 130, 238), Accent = Color3.fromRGB(221, 160, 221), Text = Color3.fromRGB(255, 250, 250), SubText = Color3.fromRGB(180, 160, 190)},
-    {Name = "Pink", Bg = Color3.fromRGB(25, 10, 15), Main = Color3.fromRGB(255, 105, 180), Accent = Color3.fromRGB(255, 20, 147), Text = Color3.fromRGB(255, 240, 245), SubText = Color3.fromRGB(200, 150, 170)},
-    {Name = "Sakura Pink", Bg = Color3.fromRGB(25, 20, 22), Main = Color3.fromRGB(255, 183, 197), Accent = Color3.fromRGB(255, 192, 203), Text = Color3.fromRGB(255, 250, 250), SubText = Color3.fromRGB(210, 180, 190)},
-    {Name = "Mint Green", Bg = Color3.fromRGB(10, 20, 15), Main = Color3.fromRGB(152, 255, 152), Accent = Color3.fromRGB(62, 180, 137), Text = Color3.fromRGB(240, 255, 240), SubText = Color3.fromRGB(140, 180, 160)},
-    {Name = "Emerald", Bg = Color3.fromRGB(5, 15, 10), Main = Color3.fromRGB(80, 200, 120), Accent = Color3.fromRGB(46, 139, 87), Text = Color3.fromRGB(230, 255, 240), SubText = Color3.fromRGB(120, 160, 140)},
-    {Name = "Crimson Red", Bg = Color3.fromRGB(20, 5, 5), Main = Color3.fromRGB(220, 20, 60), Accent = Color3.fromRGB(178, 34, 34), Text = Color3.fromRGB(255, 230, 230), SubText = Color3.fromRGB(180, 120, 120)},
-    {Name = "Blood Orange", Bg = Color3.fromRGB(20, 10, 5), Main = Color3.fromRGB(255, 69, 0), Accent = Color3.fromRGB(255, 140, 0), Text = Color3.fromRGB(255, 240, 230), SubText = Color3.fromRGB(190, 140, 120)},
-    {Name = "Ocean", Bg = Color3.fromRGB(5, 15, 20), Main = Color3.fromRGB(0, 191, 255), Accent = Color3.fromRGB(30, 144, 255), Text = Color3.fromRGB(240, 248, 255), SubText = Color3.fromRGB(120, 150, 170)},
-    {Name = "Monochrome", Bg = Color3.fromRGB(20, 20, 20), Main = Color3.fromRGB(200, 200, 200), Accent = Color3.fromRGB(255, 255, 255), Text = Color3.fromRGB(240, 240, 240), SubText = Color3.fromRGB(150, 150, 150)},
-    {Name = "Matrix", Bg = Color3.fromRGB(0, 10, 0), Main = Color3.fromRGB(0, 255, 0), Accent = Color3.fromRGB(50, 205, 50), Text = Color3.fromRGB(200, 255, 200), SubText = Color3.fromRGB(0, 150, 0)},
-    {Name = "Sunset", Bg = Color3.fromRGB(25, 15, 10), Main = Color3.fromRGB(255, 100, 50), Accent = Color3.fromRGB(255, 150, 50), Text = Color3.fromRGB(255, 240, 230), SubText = Color3.fromRGB(180, 130, 110)},
-    {Name = "Cyberpunk", Bg = Color3.fromRGB(10, 5, 20), Main = Color3.fromRGB(0, 255, 255), Accent = Color3.fromRGB(255, 0, 255), Text = Color3.fromRGB(240, 255, 255), SubText = Color3.fromRGB(150, 200, 200)},
-    {Name = "Mocha", Bg = Color3.fromRGB(25, 20, 15), Main = Color3.fromRGB(139, 69, 19), Accent = Color3.fromRGB(160, 82, 45), Text = Color3.fromRGB(255, 245, 238), SubText = Color3.fromRGB(180, 150, 130)},
-    {Name = "Forest", Bg = Color3.fromRGB(10, 20, 10), Main = Color3.fromRGB(34, 139, 34), Accent = Color3.fromRGB(46, 139, 87), Text = Color3.fromRGB(230, 255, 230), SubText = Color3.fromRGB(120, 170, 120)},
-    {Name = "Gold", Bg = Color3.fromRGB(25, 25, 10), Main = Color3.fromRGB(255, 215, 0), Accent = Color3.fromRGB(218, 165, 32), Text = Color3.fromRGB(255, 250, 220), SubText = Color3.fromRGB(180, 170, 100)},
-    {Name = "Ice", Bg = Color3.fromRGB(10, 20, 25), Main = Color3.fromRGB(175, 238, 238), Accent = Color3.fromRGB(0, 206, 209), Text = Color3.fromRGB(240, 255, 255), SubText = Color3.fromRGB(150, 180, 190)},
-    {Name = "Lavender", Bg = Color3.fromRGB(20, 15, 25), Main = Color3.fromRGB(230, 230, 250), Accent = Color3.fromRGB(216, 191, 216), Text = Color3.fromRGB(255, 250, 255), SubText = Color3.fromRGB(160, 150, 180)},
-    {Name = "Ruby", Bg = Color3.fromRGB(20, 5, 10), Main = Color3.fromRGB(224, 17, 95), Accent = Color3.fromRGB(190, 0, 50), Text = Color3.fromRGB(255, 230, 240), SubText = Color3.fromRGB(180, 110, 130)},
-    {Name = "Neon Green", Bg = Color3.fromRGB(5, 15, 5), Main = Color3.fromRGB(57, 255, 20), Accent = Color3.fromRGB(0, 255, 0), Text = Color3.fromRGB(220, 255, 220), SubText = Color3.fromRGB(100, 180, 100)},
-    {Name = "Bubblegum", Bg = Color3.fromRGB(25, 15, 20), Main = Color3.fromRGB(255, 193, 204), Accent = Color3.fromRGB(255, 105, 180), Text = Color3.fromRGB(255, 245, 250), SubText = Color3.fromRGB(200, 160, 180)},
-    {Name = "Deep Sea", Bg = Color3.fromRGB(5, 10, 25), Main = Color3.fromRGB(0, 0, 128), Accent = Color3.fromRGB(0, 0, 205), Text = Color3.fromRGB(220, 230, 255), SubText = Color3.fromRGB(110, 120, 180)},
-    {Name = "Rust", Bg = Color3.fromRGB(20, 10, 5), Main = Color3.fromRGB(183, 65, 14), Accent = Color3.fromRGB(139, 69, 19), Text = Color3.fromRGB(250, 230, 220), SubText = Color3.fromRGB(170, 120, 100)},
-    {Name = "Peach", Bg = Color3.fromRGB(25, 20, 15), Main = Color3.fromRGB(255, 218, 185), Accent = Color3.fromRGB(255, 192, 140), Text = Color3.fromRGB(255, 245, 240), SubText = Color3.fromRGB(190, 160, 150)},
-    {Name = "Custom", Bg = Color3.fromRGB(30, 30, 30), Main = Color3.fromRGB(255, 255, 255), Accent = Color3.fromRGB(200, 200, 200), Text = Color3.fromRGB(255, 255, 255), SubText = Color3.fromRGB(150, 150, 150)}
+    {Name = "Midnight", Bg = Color3.fromRGB(15, 13, 22), Main = Color3.fromRGB(120, 95, 205), Accent = Color3.fromRGB(135, 105, 235), Text = Color3.fromRGB(240, 240, 245), SubText = Color3.fromRGB(160, 150, 185)},
+    {Name = "Midnight Blue", Bg = Color3.fromRGB(10, 15, 25), Main = Color3.fromRGB(65, 105, 225), Accent = Color3.fromRGB(100, 149, 237), Text = Color3.fromRGB(240, 245, 255), SubText = Color3.fromRGB(140, 160, 185)},
+    {Name = "Purple", Bg = Color3.fromRGB(20, 10, 30), Main = Color3.fromRGB(148, 0, 211), Accent = Color3.fromRGB(186, 85, 211), Text = Color3.fromRGB(250, 240, 255), SubText = Color3.fromRGB(180, 160, 200)},
+    {Name = "Violet", Bg = Color3.fromRGB(15, 5, 25), Main = Color3.fromRGB(200, 110, 220), Accent = Color3.fromRGB(221, 160, 221), Text = Color3.fromRGB(255, 250, 250), SubText = Color3.fromRGB(190, 170, 200)},
+    {Name = "Pink", Bg = Color3.fromRGB(25, 10, 15), Main = Color3.fromRGB(230, 90, 160), Accent = Color3.fromRGB(255, 20, 147), Text = Color3.fromRGB(255, 240, 245), SubText = Color3.fromRGB(210, 160, 180)},
+    {Name = "Sakura Pink", Bg = Color3.fromRGB(25, 20, 22), Main = Color3.fromRGB(235, 160, 175), Accent = Color3.fromRGB(255, 192, 203), Text = Color3.fromRGB(255, 250, 250), SubText = Color3.fromRGB(220, 180, 190)},
+    {Name = "Mint Green", Bg = Color3.fromRGB(10, 20, 15), Main = Color3.fromRGB(100, 210, 150), Accent = Color3.fromRGB(62, 180, 137), Text = Color3.fromRGB(240, 255, 240), SubText = Color3.fromRGB(150, 190, 170)},
+    {Name = "Emerald", Bg = Color3.fromRGB(5, 15, 10), Main = Color3.fromRGB(70, 180, 110), Accent = Color3.fromRGB(46, 139, 87), Text = Color3.fromRGB(230, 255, 240), SubText = Color3.fromRGB(130, 170, 150)},
+    {Name = "Crimson Red", Bg = Color3.fromRGB(20, 5, 5), Main = Color3.fromRGB(210, 40, 60), Accent = Color3.fromRGB(178, 34, 34), Text = Color3.fromRGB(255, 235, 235), SubText = Color3.fromRGB(190, 140, 140)},
+    {Name = "Blood Orange", Bg = Color3.fromRGB(20, 10, 5), Main = Color3.fromRGB(235, 75, 20), Accent = Color3.fromRGB(255, 140, 0), Text = Color3.fromRGB(255, 240, 230), SubText = Color3.fromRGB(200, 150, 130)},
+    {Name = "Ocean", Bg = Color3.fromRGB(5, 15, 20), Main = Color3.fromRGB(30, 170, 230), Accent = Color3.fromRGB(30, 144, 255), Text = Color3.fromRGB(240, 248, 255), SubText = Color3.fromRGB(140, 170, 190)},
+    {Name = "Monochrome", Bg = Color3.fromRGB(20, 20, 20), Main = Color3.fromRGB(180, 180, 180), Accent = Color3.fromRGB(255, 255, 255), Text = Color3.fromRGB(245, 245, 245), SubText = Color3.fromRGB(160, 160, 160)},
+    {Name = "Matrix", Bg = Color3.fromRGB(0, 10, 0), Main = Color3.fromRGB(0, 210, 0), Accent = Color3.fromRGB(50, 205, 50), Text = Color3.fromRGB(220, 255, 220), SubText = Color3.fromRGB(100, 180, 100)},
+    {Name = "Sunset", Bg = Color3.fromRGB(25, 15, 10), Main = Color3.fromRGB(235, 100, 50), Accent = Color3.fromRGB(255, 150, 50), Text = Color3.fromRGB(255, 240, 230), SubText = Color3.fromRGB(190, 140, 120)},
+    {Name = "Cyberpunk", Bg = Color3.fromRGB(10, 5, 20), Main = Color3.fromRGB(0, 220, 220), Accent = Color3.fromRGB(255, 0, 255), Text = Color3.fromRGB(240, 255, 255), SubText = Color3.fromRGB(160, 210, 210)},
+    {Name = "Mocha", Bg = Color3.fromRGB(25, 20, 15), Main = Color3.fromRGB(150, 85, 40), Accent = Color3.fromRGB(160, 82, 45), Text = Color3.fromRGB(255, 245, 238), SubText = Color3.fromRGB(190, 160, 140)},
+    {Name = "Forest", Bg = Color3.fromRGB(10, 20, 10), Main = Color3.fromRGB(45, 150, 45), Accent = Color3.fromRGB(46, 139, 87), Text = Color3.fromRGB(230, 255, 230), SubText = Color3.fromRGB(140, 180, 140)},
+    {Name = "Gold", Bg = Color3.fromRGB(25, 25, 10), Main = Color3.fromRGB(225, 185, 20), Accent = Color3.fromRGB(218, 165, 32), Text = Color3.fromRGB(255, 250, 220), SubText = Color3.fromRGB(190, 180, 120)},
+    {Name = "Ice", Bg = Color3.fromRGB(10, 20, 25), Main = Color3.fromRGB(120, 210, 220), Accent = Color3.fromRGB(0, 206, 209), Text = Color3.fromRGB(240, 255, 255), SubText = Color3.fromRGB(160, 190, 200)},
+    {Name = "Lavender", Bg = Color3.fromRGB(20, 15, 25), Main = Color3.fromRGB(190, 180, 220), Accent = Color3.fromRGB(216, 191, 216), Text = Color3.fromRGB(255, 250, 255), SubText = Color3.fromRGB(180, 170, 200)},
+    {Name = "Ruby", Bg = Color3.fromRGB(20, 5, 10), Main = Color3.fromRGB(210, 30, 85), Accent = Color3.fromRGB(190, 0, 50), Text = Color3.fromRGB(255, 230, 240), SubText = Color3.fromRGB(190, 130, 150)},
+    {Name = "Neon Green", Bg = Color3.fromRGB(5, 15, 5), Main = Color3.fromRGB(50, 220, 40), Accent = Color3.fromRGB(0, 255, 0), Text = Color3.fromRGB(230, 255, 230), SubText = Color3.fromRGB(120, 190, 120)},
+    {Name = "Bubblegum", Bg = Color3.fromRGB(25, 15, 20), Main = Color3.fromRGB(235, 150, 180), Accent = Color3.fromRGB(255, 105, 180), Text = Color3.fromRGB(255, 245, 250), SubText = Color3.fromRGB(210, 170, 190)},
+    {Name = "Deep Sea", Bg = Color3.fromRGB(5, 10, 25), Main = Color3.fromRGB(40, 70, 180), Accent = Color3.fromRGB(0, 0, 205), Text = Color3.fromRGB(220, 230, 255), SubText = Color3.fromRGB(130, 150, 200)},
+    {Name = "Rust", Bg = Color3.fromRGB(20, 10, 5), Main = Color3.fromRGB(180, 75, 25), Accent = Color3.fromRGB(139, 69, 19), Text = Color3.fromRGB(250, 230, 220), SubText = Color3.fromRGB(180, 130, 110)},
+    {Name = "Peach", Bg = Color3.fromRGB(25, 20, 15), Main = Color3.fromRGB(235, 180, 150), Accent = Color3.fromRGB(255, 192, 140), Text = Color3.fromRGB(255, 245, 240), SubText = Color3.fromRGB(200, 170, 160)},
+    {Name = "Custom", Bg = Color3.fromRGB(30, 30, 30), Main = Color3.fromRGB(220, 220, 220), Accent = Color3.fromRGB(200, 200, 200), Text = Color3.fromRGB(255, 255, 255), SubText = Color3.fromRGB(160, 160, 160)}
 }
+
+local function applyCleanTextSettings(obj)
+    if obj:IsA("TextLabel") or obj:IsA("TextButton") or obj:IsA("TextBox") then
+        obj.Font = Enum.Font.Arial
+        obj.TextStrokeTransparency = 1
+    end
+end
+
+local function makeStroke(parent)
+    local stroke = Instance.new("UIStroke")
+    stroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+    stroke.Transparency = 0.6
+    stroke.Thickness = 1
+    stroke.Parent = parent
+    return stroke
+end
 
 local function makeDraggable(topBar, objectToMove)
     local dragging, dragInput, dragStart, startPos
@@ -60,14 +76,14 @@ end
 function LunarLib:CreateWindow(options)
     options = options or {}
     local WindowTitle = options.Title or "Lunar UI"
-    local DefaultTheme = options.Theme or "Midnight Blue"
+    local DefaultTheme = options.Theme or "Midnight"
     local FolderName = options.Folder or "LunarConfigs"
     local WindowSize = options.Size or UDim2.new(0, 280, 0, 360)
     
     local Window = {
         ThemeIndex = 1,
         CurrentTheme = nil,
-        ThemedElements = {Bg = {}, Main = {}, Accent = {}, Text = {}, SubText = {}, StrokeMain = {}, TextGlow = {}},
+        ThemedElements = {Bg = {}, Main = {}, Accent = {}, Text = {}, SubText = {}, StrokeMain = {}},
         ActiveToggles = {},
         Tabs = {},
         FirstTab = nil,
@@ -90,52 +106,11 @@ function LunarLib:CreateWindow(options)
     if not success then ScreenGui.Parent = Player:WaitForChild("PlayerGui") end
     Window.Gui = ScreenGui
 
-    local function addTextGlow(textObject)
-        local glow = Instance.new("UIStroke")
-        glow.ApplyStrokeMode = Enum.ApplyStrokeMode.Contextual
-        glow.Color = Window.CurrentTheme.Main
-        glow.Thickness = 1
-        glow.Transparency = 0.25
-        glow.Parent = textObject
-        table.insert(Window.ThemedElements.StrokeMain, glow)
-    end
-
     function Window:ApplyTheme()
         local t = self.CurrentTheme
-        for _, obj in ipairs(self.ThemedElements.Bg) do 
-            if obj then 
-                pcall(function() 
-                    obj.BackgroundColor3 = t.Bg 
-                end) 
-            end 
-        end
-        
-        for _, obj in ipairs(self.ThemedElements.Main) do 
-            if obj then 
-                pcall(function() 
-                    if obj:IsA("TextLabel") or obj:IsA("TextButton") or obj:IsA("TextBox") then 
-                        obj.TextColor3 = t.Main 
-                    else 
-                        obj.BackgroundColor3 = t.Main 
-                    end 
-                end) 
-            end 
-        end
-        
-        for _, obj in ipairs(self.ThemedElements.Text) do 
-            if obj then 
-                pcall(function() 
-                    if obj:IsA("TextLabel") or obj:IsA("TextBox") or obj:IsA("TextButton") then 
-                        obj.TextColor3 = t.Text 
-                    else 
-                        obj.BackgroundColor3 = t.Text 
-                    end 
-                    if obj:IsA("TextBox") then
-                        obj.PlaceholderColor3 = t.SubText
-                    end
-                end) 
-            end 
-        end
+        for _, obj in ipairs(self.ThemedElements.Bg) do if obj then pcall(function() obj.BackgroundColor3 = t.Bg end) end end
+        for _, obj in ipairs(self.ThemedElements.Main) do if obj then pcall(function() if obj:IsA("TextLabel") or obj:IsA("TextButton") or obj:IsA("TextBox") then obj.TextColor3 = t.Main else obj.BackgroundColor3 = t.Main end end) end end
+        for _, obj in ipairs(self.ThemedElements.Text) do if obj then pcall(function() if obj:IsA("TextLabel") or obj:IsA("TextBox") or obj:IsA("TextButton") then obj.TextColor3 = t.Text else obj.BackgroundColor3 = t.Text end end) end end
         
         for _, obj in ipairs(self.ThemedElements.SubText) do 
             if obj then 
@@ -151,20 +126,14 @@ function LunarLib:CreateWindow(options)
             end 
         end
         
-        for _, obj in ipairs(self.ThemedElements.StrokeMain) do 
-            if obj then 
-                pcall(function() 
-                    obj.Color = t.Main 
-                end) 
-            end 
-        end
+        for _, obj in ipairs(self.ThemedElements.StrokeMain) do if obj then pcall(function() obj.Color = t.Main end) end end
         
         for _, data in ipairs(self.ActiveToggles) do
             if data.state then
                 data.bg.BackgroundColor3 = t.Main
                 data.knob.BackgroundColor3 = Color3.new(1,1,1)
             else
-                data.bg.BackgroundColor3 = Color3.fromRGB(20, 25, 40)
+                data.bg.BackgroundColor3 = Color3.fromRGB(25, 22, 35)
                 data.knob.BackgroundColor3 = t.SubText
             end
         end
@@ -174,7 +143,7 @@ function LunarLib:CreateWindow(options)
     MainFrame.Size = WindowSize
     MainFrame.Position = UDim2.new(0.5, - (WindowSize.X.Offset / 2), 0.5, - (WindowSize.Y.Offset / 2))
     MainFrame.BackgroundColor3 = Window.CurrentTheme.Bg
-    MainFrame.BackgroundTransparency = 0.15
+    MainFrame.BackgroundTransparency = 0.05
     MainFrame.BorderSizePixel = 0
     MainFrame.ClipsDescendants = true
     MainFrame.Active = true
@@ -182,9 +151,7 @@ function LunarLib:CreateWindow(options)
     Instance.new("UICorner", MainFrame).CornerRadius = UDim.new(0, 10)
     table.insert(Window.ThemedElements.Bg, MainFrame)
 
-    local MainStroke = Instance.new("UIStroke", MainFrame)
-    MainStroke.Transparency = 0.3
-    MainStroke.Thickness = 1.2
+    local MainStroke = makeStroke(MainFrame)
     table.insert(Window.ThemedElements.StrokeMain, MainStroke)
 
     local Header = Instance.new("Frame")
@@ -199,21 +166,20 @@ function LunarLib:CreateWindow(options)
     Title.Position = UDim2.new(0, 12, 0, 0)
     Title.BackgroundTransparency = 1
     Title.Text = WindowTitle
-    Title.Font = Enum.Font.ArialBold
     Title.TextSize = 15
     Title.TextXAlignment = Enum.TextXAlignment.Left
     Title.Parent = Header
+    applyCleanTextSettings(Title)
     table.insert(Window.ThemedElements.Text, Title)
-    addTextGlow(Title)
 
     local MinimizeBtn = Instance.new("TextButton")
     MinimizeBtn.Size = UDim2.new(0, 20, 0, 20)
     MinimizeBtn.Position = UDim2.new(1, -25, 0.5, -10)
     MinimizeBtn.BackgroundTransparency = 1
     MinimizeBtn.Text = "🌙"
-    MinimizeBtn.Font = Enum.Font.Arial
     MinimizeBtn.TextSize = 14
     MinimizeBtn.Parent = Header
+    applyCleanTextSettings(MinimizeBtn)
     table.insert(Window.ThemedElements.Text, MinimizeBtn)
 
     local TabContainer = Instance.new("ScrollingFrame")
@@ -236,26 +202,24 @@ function LunarLib:CreateWindow(options)
     PageContainer.BackgroundTransparency = 1
     PageContainer.Parent = MainFrame
 
+    -- Draggable Reopen Button (Circle)
     local OpenButton = Instance.new("TextButton")
     OpenButton.Size = UDim2.new(0, 40, 0, 40)
     OpenButton.Position = UDim2.new(0, 20, 0, 20)
     OpenButton.BackgroundColor3 = Window.CurrentTheme.Bg
-    OpenButton.BackgroundTransparency = 0.2
+    OpenButton.BackgroundTransparency = 0.05
     OpenButton.Text = "🌙"
-    OpenButton.Font = Enum.Font.Arial
     OpenButton.TextSize = 20
     OpenButton.Visible = false
     OpenButton.Active = true
     OpenButton.Parent = ScreenGui
+    applyCleanTextSettings(OpenButton)
     
     local OpenCorner = Instance.new("UICorner")
     OpenCorner.CornerRadius = UDim.new(1, 0)
     OpenCorner.Parent = OpenButton
     
-    local OpenStroke = Instance.new("UIStroke")
-    OpenStroke.Transparency = 0.3
-    OpenStroke.Thickness = 1.2
-    OpenStroke.Parent = OpenButton
+    local OpenStroke = makeStroke(OpenButton)
 
     table.insert(Window.ThemedElements.Bg, OpenButton)
     table.insert(Window.ThemedElements.Text, OpenButton)
@@ -280,22 +244,19 @@ function LunarLib:CreateWindow(options)
         
         local TabBtn = Instance.new("TextButton")
         TabBtn.Size = UDim2.new(0, 75, 1, 0)
-        TabBtn.BackgroundColor3 = Window.CurrentTheme.Bg
-        TabBtn.BackgroundTransparency = 0.5
+        TabBtn.BackgroundTransparency = 0.3
         TabBtn.Text = name
-        TabBtn.Font = Enum.Font.ArialBold
         TabBtn.TextSize = 13
         TabBtn.Parent = TabContainer
+        applyCleanTextSettings(TabBtn)
+
         Instance.new("UICorner", TabBtn).CornerRadius = UDim.new(0, 6)
-        
-        local TabStroke = Instance.new("UIStroke", TabBtn)
+        local TabStroke = makeStroke(TabBtn)
         TabStroke.Transparency = 0.7
-        TabStroke.Thickness = 1
         
         table.insert(Window.ThemedElements.Bg, TabBtn)
         table.insert(Window.ThemedElements.Text, TabBtn)
         table.insert(Window.ThemedElements.StrokeMain, TabStroke)
-        addTextGlow(TabBtn)
 
         local Page = Instance.new("ScrollingFrame")
         Page.Size = UDim2.new(1, 0, 1, 0)
@@ -317,18 +278,15 @@ function LunarLib:CreateWindow(options)
             Window.FirstTab = Page
             Page.Visible = true
             TabStroke.Transparency = 0
-            TabBtn.BackgroundTransparency = 0.2
         end
 
         TabBtn.MouseButton1Click:Connect(function()
             for _, t in ipairs(Window.Tabs) do
                 t.Page.Visible = false
                 t.Stroke.Transparency = 0.7
-                t.Btn.BackgroundTransparency = 0.5
             end
             Page.Visible = true
             TabStroke.Transparency = 0
-            TabBtn.BackgroundTransparency = 0.2
         end)
 
         function Tab:CreateButton(opts)
@@ -336,23 +294,19 @@ function LunarLib:CreateWindow(options)
             local callback = opts.Callback or function() end
 
             local BtnFrame = Instance.new("TextButton")
-            BtnFrame.Size = UDim2.new(1, 0, 0, 32)
-            BtnFrame.BackgroundColor3 = Window.CurrentTheme.Bg
-            BtnFrame.BackgroundTransparency = 0.4
+            BtnFrame.Size = UDim2.new(1, 0, 0, 30)
+            BtnFrame.BackgroundTransparency = 0.2
             BtnFrame.Text = title
-            BtnFrame.Font = Enum.Font.ArialBold
             BtnFrame.TextSize = 13
             BtnFrame.Parent = Page
+            applyCleanTextSettings(BtnFrame)
+
             Instance.new("UICorner", BtnFrame).CornerRadius = UDim.new(0, 6)
-            
-            local stroke = Instance.new("UIStroke", BtnFrame)
-            stroke.Transparency = 0.4
-            stroke.Thickness = 1
+            local stroke = makeStroke(BtnFrame)
             
             table.insert(Window.ThemedElements.Bg, BtnFrame)
             table.insert(Window.ThemedElements.Text, BtnFrame)
             table.insert(Window.ThemedElements.StrokeMain, stroke)
-            addTextGlow(BtnFrame)
 
             BtnFrame.MouseButton1Click:Connect(callback)
         end
@@ -364,15 +318,11 @@ function LunarLib:CreateWindow(options)
             local callback = opts.Callback or function() end
 
             local boxFrame = Instance.new("Frame")
-            boxFrame.Size = UDim2.new(1, 0, 0, 32)
-            boxFrame.BackgroundColor3 = Window.CurrentTheme.Bg
-            boxFrame.BackgroundTransparency = 0.4
+            boxFrame.Size = UDim2.new(1, 0, 0, 30)
+            boxFrame.BackgroundTransparency = 0.2
             boxFrame.Parent = Page
             Instance.new("UICorner", boxFrame).CornerRadius = UDim.new(0, 6)
-            
-            local stroke = Instance.new("UIStroke", boxFrame)
-            stroke.Transparency = 0.4
-            stroke.Thickness = 1
+            local stroke = makeStroke(boxFrame)
             
             table.insert(Window.ThemedElements.Bg, boxFrame)
             table.insert(Window.ThemedElements.StrokeMain, stroke)
@@ -383,13 +333,12 @@ function LunarLib:CreateWindow(options)
             box.BackgroundTransparency = 1
             box.Text = ""
             box.PlaceholderText = placeholder
-            box.Font = Enum.Font.Arial
             box.TextSize = 13
             box.TextXAlignment = Enum.TextXAlignment.Left
             box.Parent = boxFrame
-            
+            applyCleanTextSettings(box)
+
             table.insert(Window.ThemedElements.Text, box)
-            addTextGlow(box)
 
             local Element = {Value = ""}
             function Element:Set(val)
@@ -414,29 +363,26 @@ function LunarLib:CreateWindow(options)
             local callback = opts.Callback or function() end
 
             local tglBtn = Instance.new("TextButton")
-            tglBtn.Size = UDim2.new(1, 0, 0, 32)
-            tglBtn.BackgroundColor3 = Window.CurrentTheme.Bg
-            tglBtn.BackgroundTransparency = 0.4
+            tglBtn.Size = UDim2.new(1, 0, 0, 30)
+            tglBtn.BackgroundTransparency = 0.2
             tglBtn.Text = "  " .. title
             tglBtn.TextXAlignment = Enum.TextXAlignment.Left
-            tglBtn.Font = Enum.Font.ArialBold
             tglBtn.TextSize = 13
             tglBtn.Parent = Page
+            applyCleanTextSettings(tglBtn)
+
             Instance.new("UICorner", tglBtn).CornerRadius = UDim.new(0, 6)
-            
-            local stroke = Instance.new("UIStroke", tglBtn)
-            stroke.Transparency = 0.4
-            stroke.Thickness = 1
+            local stroke = makeStroke(tglBtn)
+            stroke.Transparency = 0.5
             
             table.insert(Window.ThemedElements.Bg, tglBtn)
             table.insert(Window.ThemedElements.Text, tglBtn)
             table.insert(Window.ThemedElements.StrokeMain, stroke)
-            addTextGlow(tglBtn)
 
             local switchBg = Instance.new("Frame")
             switchBg.Size = UDim2.new(0, 32, 0, 16)
             switchBg.Position = UDim2.new(1, -40, 0.5, -8)
-            switchBg.BackgroundColor3 = Color3.fromRGB(20, 25, 40)
+            switchBg.BackgroundColor3 = Color3.fromRGB(25, 22, 35)
             switchBg.Parent = tglBtn
             Instance.new("UICorner", switchBg).CornerRadius = UDim.new(1, 0)
 
@@ -456,7 +402,7 @@ function LunarLib:CreateWindow(options)
                     TweenService:Create(switchBg, TweenInfo.new(0.2), {BackgroundColor3 = Window.CurrentTheme.Main}):Play()
                     TweenService:Create(knob, TweenInfo.new(0.2), {Position = UDim2.new(1, -14, 0.5, -6), BackgroundColor3 = Color3.new(1,1,1)}):Play()
                 else
-                    TweenService:Create(switchBg, TweenInfo.new(0.2), {BackgroundColor3 = Color3.fromRGB(20, 25, 40)}):Play()
+                    TweenService:Create(switchBg, TweenInfo.new(0.2), {BackgroundColor3 = Color3.fromRGB(25, 22, 35)}):Play()
                     TweenService:Create(knob, TweenInfo.new(0.2), {Position = UDim2.new(0, 2, 0.5, -6), BackgroundColor3 = Window.CurrentTheme.SubText}):Play()
                 end
                 callback(Element.Value)
@@ -489,14 +435,10 @@ function LunarLib:CreateWindow(options)
 
             local sliderFrame = Instance.new("Frame")
             sliderFrame.Size = UDim2.new(1, 0, 0, 42)
-            sliderFrame.BackgroundColor3 = Window.CurrentTheme.Bg
-            sliderFrame.BackgroundTransparency = 0.4
+            sliderFrame.BackgroundTransparency = 0.2
             sliderFrame.Parent = Page
             Instance.new("UICorner", sliderFrame).CornerRadius = UDim.new(0, 6)
-            
-            local stroke = Instance.new("UIStroke", sliderFrame)
-            stroke.Transparency = 0.4
-            stroke.Thickness = 1
+            local stroke = makeStroke(sliderFrame)
             
             table.insert(Window.ThemedElements.Bg, sliderFrame)
             table.insert(Window.ThemedElements.StrokeMain, stroke)
@@ -506,28 +448,29 @@ function LunarLib:CreateWindow(options)
             label.Position = UDim2.new(0, 8, 0, 2)
             label.BackgroundTransparency = 1
             label.Text = title
-            label.Font = Enum.Font.ArialBold
             label.TextSize = 13
             label.TextXAlignment = Enum.TextXAlignment.Left
             label.Parent = sliderFrame
+            applyCleanTextSettings(label)
+
             table.insert(Window.ThemedElements.Text, label)
-            addTextGlow(label)
 
             local valLabel = Instance.new("TextLabel")
             valLabel.Size = UDim2.new(0, 40, 0, 20)
             valLabel.Position = UDim2.new(1, -48, 0, 2)
             valLabel.BackgroundTransparency = 1
             valLabel.Text = tostring(default)
-            valLabel.Font = Enum.Font.ArialBold
             valLabel.TextSize = 12
             valLabel.TextXAlignment = Enum.TextXAlignment.Right
             valLabel.Parent = sliderFrame
+            applyCleanTextSettings(valLabel)
+
             table.insert(Window.ThemedElements.SubText, valLabel)
 
             local barBg = Instance.new("Frame")
             barBg.Size = UDim2.new(1, -16, 0, 4)
             barBg.Position = UDim2.new(0, 8, 0, 28)
-            barBg.BackgroundColor3 = Color3.fromRGB(25, 30, 45)
+            barBg.BackgroundColor3 = Color3.fromRGB(35, 30, 45)
             barBg.Parent = sliderFrame
             Instance.new("UICorner", barBg).CornerRadius = UDim.new(1, 0)
 
@@ -587,38 +530,34 @@ function LunarLib:CreateWindow(options)
             local callback = opts.Callback or function() end
 
             local ddBtn = Instance.new("TextButton")
-            ddBtn.Size = UDim2.new(1, 0, 0, 32)
-            ddBtn.BackgroundColor3 = Window.CurrentTheme.Bg
-            ddBtn.BackgroundTransparency = 0.4
+            ddBtn.Size = UDim2.new(1, 0, 0, 30)
+            ddBtn.BackgroundTransparency = 0.2
             ddBtn.Text = "  " .. title .. ": " .. tostring(default)
             ddBtn.TextXAlignment = Enum.TextXAlignment.Left
-            ddBtn.Font = Enum.Font.ArialBold
             ddBtn.TextSize = 13
             ddBtn.Parent = Page
+            applyCleanTextSettings(ddBtn)
+
             Instance.new("UICorner", ddBtn).CornerRadius = UDim.new(0, 6)
-            
-            local stroke = Instance.new("UIStroke", ddBtn)
-            stroke.Transparency = 0.4
-            stroke.Thickness = 1
+            local stroke = makeStroke(ddBtn)
             
             table.insert(Window.ThemedElements.Bg, ddBtn)
             table.insert(Window.ThemedElements.Text, ddBtn)
             table.insert(Window.ThemedElements.StrokeMain, stroke)
-            addTextGlow(ddBtn)
 
             local arrow = Instance.new("TextLabel")
             arrow.Size = UDim2.new(0, 20, 1, 0)
             arrow.Position = UDim2.new(1, -25, 0, 0)
             arrow.BackgroundTransparency = 1
             arrow.Text = "▼"
-            arrow.Font = Enum.Font.Arial
             arrow.TextSize = 11
             arrow.Parent = ddBtn
+            applyCleanTextSettings(arrow)
+
             table.insert(Window.ThemedElements.SubText, arrow)
 
             local listFrame = Instance.new("ScrollingFrame")
             listFrame.Size = UDim2.new(1, 0, 0, 0)
-            listFrame.BackgroundColor3 = Window.CurrentTheme.Bg
             listFrame.BackgroundTransparency = 0.2
             listFrame.BorderSizePixel = 0
             listFrame.ScrollBarThickness = 2
@@ -628,10 +567,7 @@ function LunarLib:CreateWindow(options)
             listFrame.CanvasSize = UDim2.new(0, 0, 0, 0)
             listFrame.Parent = Page
             Instance.new("UICorner", listFrame).CornerRadius = UDim.new(0, 6)
-            
-            local listStroke = Instance.new("UIStroke", listFrame)
-            listStroke.Transparency = 0.4
-            listStroke.Thickness = 1
+            local listStroke = makeStroke(listFrame)
             
             table.insert(Window.ThemedElements.Bg, listFrame)
             table.insert(Window.ThemedElements.StrokeMain, listStroke)
@@ -674,12 +610,12 @@ function LunarLib:CreateWindow(options)
                     optBtn.Size = UDim2.new(1, -8, 0, 24)
                     optBtn.BackgroundTransparency = 1
                     optBtn.Text = "  " .. tostring(opt)
-                    optBtn.Font = Enum.Font.ArialBold
                     optBtn.TextSize = 12
                     optBtn.TextXAlignment = Enum.TextXAlignment.Left
                     optBtn.Parent = listFrame
+                    applyCleanTextSettings(optBtn)
+
                     table.insert(Window.ThemedElements.Text, optBtn)
-                    addTextGlow(optBtn)
 
                     optBtn.MouseButton1Click:Connect(function()
                         Element:Set(opt)
@@ -690,9 +626,8 @@ function LunarLib:CreateWindow(options)
             end
 
             function Element:Set(val)
-                local rawVal = tostring(val):gsub("^%s*" .. title:gsub("([%^%$%(%)%%%.%[%]%*%+%-%?])", "%%%1") .. "%s*:%s*", "")
-                Element.Value = rawVal
-                ddBtn.Text = "  " .. title .. ": " .. rawVal
+                Element.Value = val
+                ddBtn.Text = "  " .. title .. ": " .. tostring(val)
                 callback(Element.Value)
             end
 
@@ -858,4 +793,3 @@ function LunarLib:CreateWindow(options)
 end
 
 return LunarLib
-
