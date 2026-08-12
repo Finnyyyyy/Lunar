@@ -62,7 +62,7 @@ function LunarLib:CreateWindow(options)
     local WindowTitle = options.Title or "Lunar UI"
     local DefaultTheme = options.Theme or "Midnight"
     local FolderName = options.Folder or "LunarConfigs"
-    local WindowSize = options.Size or UDim2.new(0, 280, 0, 400)
+    local WindowSize = options.Size or UDim2.new(0, 280, 0, 360)
     
     local Window = {
         ThemeIndex = 1,
@@ -141,7 +141,7 @@ function LunarLib:CreateWindow(options)
     table.insert(Window.ThemedElements.StrokeMain, MainStroke)
 
     local Header = Instance.new("Frame")
-    Header.Size = UDim2.new(1, 0, 0, 50)
+    Header.Size = UDim2.new(1, 0, 0, 45)
     Header.BackgroundTransparency = 1
     Header.Active = true
     Header.Parent = MainFrame
@@ -149,11 +149,11 @@ function LunarLib:CreateWindow(options)
 
     local Title = Instance.new("TextLabel")
     Title.Size = UDim2.new(1, -40, 1, 0)
-    Title.Position = UDim2.new(0, 15, 0, 0)
+    Title.Position = UDim2.new(0, 12, 0, 0)
     Title.BackgroundTransparency = 1
     Title.Text = WindowTitle
-    Title.Font = Enum.Font.Code
-    Title.TextSize = 14
+    Title.Font = Enum.Font.SourceSansBold
+    Title.TextSize = 16
     Title.TextXAlignment = Enum.TextXAlignment.Left
     Title.Parent = Header
     table.insert(Window.ThemedElements.Text, Title)
@@ -167,8 +167,8 @@ function LunarLib:CreateWindow(options)
     table.insert(Window.ThemedElements.SubText, MinimizeBtn)
 
     local TabContainer = Instance.new("ScrollingFrame")
-    TabContainer.Size = UDim2.new(1, -20, 0, 32)
-    TabContainer.Position = UDim2.new(0, 10, 0, 50)
+    TabContainer.Size = UDim2.new(1, -20, 0, 30)
+    TabContainer.Position = UDim2.new(0, 10, 0, 45)
     TabContainer.BackgroundTransparency = 1
     TabContainer.ScrollBarThickness = 0
     TabContainer.CanvasSize = UDim2.new(0, 0, 0, 0)
@@ -181,8 +181,8 @@ function LunarLib:CreateWindow(options)
     TabListLayout.Padding = UDim.new(0, 6)
 
     local PageContainer = Instance.new("Frame")
-    PageContainer.Size = UDim2.new(1, -20, 1, -95)
-    PageContainer.Position = UDim2.new(0, 10, 0, 85)
+    PageContainer.Size = UDim2.new(1, -20, 1, -85)
+    PageContainer.Position = UDim2.new(0, 10, 0, 80)
     PageContainer.BackgroundTransparency = 1
     PageContainer.Parent = MainFrame
 
@@ -190,7 +190,7 @@ function LunarLib:CreateWindow(options)
     MinimizeBtn.MouseButton1Click:Connect(function()
         minimized = not minimized
         if minimized then
-            TweenService:Create(MainFrame, TweenInfo.new(0.3, Enum.EasingStyle.Quart), {Size = UDim2.new(0, WindowSize.X.Offset, 0, 50)}):Play()
+            TweenService:Create(MainFrame, TweenInfo.new(0.3, Enum.EasingStyle.Quart), {Size = UDim2.new(0, WindowSize.X.Offset, 0, 45)}):Play()
             TabContainer.Visible = false
             PageContainer.Visible = false
         else
@@ -206,11 +206,11 @@ function LunarLib:CreateWindow(options)
         local Tab = {}
         
         local TabBtn = Instance.new("TextButton")
-        TabBtn.Size = UDim2.new(0, 80, 1, 0)
+        TabBtn.Size = UDim2.new(0, 75, 1, 0)
         TabBtn.BackgroundTransparency = 0.3
         TabBtn.Text = name
-        TabBtn.Font = Enum.Font.Code
-        TabBtn.TextSize = 12
+        TabBtn.Font = Enum.Font.SourceSansBold
+        TabBtn.TextSize = 14
         TabBtn.Parent = TabContainer
         Instance.new("UICorner", TabBtn).CornerRadius = UDim.new(0, 6)
         local TabStroke = Instance.new("UIStroke", TabBtn)
@@ -256,11 +256,11 @@ function LunarLib:CreateWindow(options)
             local callback = opts.Callback or function() end
 
             local BtnFrame = Instance.new("TextButton")
-            BtnFrame.Size = UDim2.new(1, 0, 0, 32)
+            BtnFrame.Size = UDim2.new(1, 0, 0, 30)
             BtnFrame.BackgroundTransparency = 0.2
             BtnFrame.Text = title
-            BtnFrame.Font = Enum.Font.Code
-            BtnFrame.TextSize = 12
+            BtnFrame.Font = Enum.Font.SourceSans
+            BtnFrame.TextSize = 14
             BtnFrame.Parent = Page
             Instance.new("UICorner", BtnFrame).CornerRadius = UDim.new(0, 6)
             local stroke = Instance.new("UIStroke", BtnFrame)
@@ -279,7 +279,7 @@ function LunarLib:CreateWindow(options)
             local callback = opts.Callback or function() end
 
             local boxFrame = Instance.new("Frame")
-            boxFrame.Size = UDim2.new(1, 0, 0, 32)
+            boxFrame.Size = UDim2.new(1, 0, 0, 30)
             boxFrame.BackgroundTransparency = 0.2
             boxFrame.Parent = Page
             Instance.new("UICorner", boxFrame).CornerRadius = UDim.new(0, 6)
@@ -294,8 +294,8 @@ function LunarLib:CreateWindow(options)
             box.BackgroundTransparency = 1
             box.Text = ""
             box.PlaceholderText = placeholder
-            box.Font = Enum.Font.Code
-            box.TextSize = 12
+            box.Font = Enum.Font.SourceSans
+            box.TextSize = 14
             box.TextXAlignment = Enum.TextXAlignment.Left
             box.Parent = boxFrame
             table.insert(Window.ThemedElements.Text, box)
@@ -323,12 +323,12 @@ function LunarLib:CreateWindow(options)
             local callback = opts.Callback or function() end
 
             local tglBtn = Instance.new("TextButton")
-            tglBtn.Size = UDim2.new(1, 0, 0, 32)
+            tglBtn.Size = UDim2.new(1, 0, 0, 30)
             tglBtn.BackgroundTransparency = 0.2
             tglBtn.Text = "  " .. title
             tglBtn.TextXAlignment = Enum.TextXAlignment.Left
-            tglBtn.Font = Enum.Font.Code
-            tglBtn.TextSize = 12
+            tglBtn.Font = Enum.Font.SourceSans
+            tglBtn.TextSize = 14
             tglBtn.Parent = Page
             Instance.new("UICorner", tglBtn).CornerRadius = UDim.new(0, 6)
             local stroke = Instance.new("UIStroke", tglBtn)
@@ -393,7 +393,7 @@ function LunarLib:CreateWindow(options)
             local callback = opts.Callback or function() end
 
             local sliderFrame = Instance.new("Frame")
-            sliderFrame.Size = UDim2.new(1, 0, 0, 44)
+            sliderFrame.Size = UDim2.new(1, 0, 0, 42)
             sliderFrame.BackgroundTransparency = 0.2
             sliderFrame.Parent = Page
             Instance.new("UICorner", sliderFrame).CornerRadius = UDim.new(0, 6)
@@ -403,23 +403,23 @@ function LunarLib:CreateWindow(options)
             table.insert(Window.ThemedElements.StrokeMain, stroke)
 
             local label = Instance.new("TextLabel")
-            label.Size = UDim2.new(1, -16, 0, 22)
-            label.Position = UDim2.new(0, 8, 0, 0)
+            label.Size = UDim2.new(1, -16, 0, 20)
+            label.Position = UDim2.new(0, 8, 0, 2)
             label.BackgroundTransparency = 1
             label.Text = title
-            label.Font = Enum.Font.Code
-            label.TextSize = 12
+            label.Font = Enum.Font.SourceSans
+            label.TextSize = 14
             label.TextXAlignment = Enum.TextXAlignment.Left
             label.Parent = sliderFrame
             table.insert(Window.ThemedElements.Text, label)
 
             local valLabel = Instance.new("TextLabel")
-            valLabel.Size = UDim2.new(0, 40, 0, 22)
-            valLabel.Position = UDim2.new(1, -48, 0, 0)
+            valLabel.Size = UDim2.new(0, 40, 0, 20)
+            valLabel.Position = UDim2.new(1, -48, 0, 2)
             valLabel.BackgroundTransparency = 1
             valLabel.Text = tostring(default)
-            valLabel.Font = Enum.Font.Code
-            valLabel.TextSize = 11
+            valLabel.Font = Enum.Font.SourceSans
+            valLabel.TextSize = 13
             valLabel.TextXAlignment = Enum.TextXAlignment.Right
             valLabel.Parent = sliderFrame
             table.insert(Window.ThemedElements.SubText, valLabel)
@@ -487,12 +487,12 @@ function LunarLib:CreateWindow(options)
             local callback = opts.Callback or function() end
 
             local ddBtn = Instance.new("TextButton")
-            ddBtn.Size = UDim2.new(1, 0, 0, 32)
+            ddBtn.Size = UDim2.new(1, 0, 0, 30)
             ddBtn.BackgroundTransparency = 0.2
             ddBtn.Text = "  " .. title .. ": " .. tostring(default)
             ddBtn.TextXAlignment = Enum.TextXAlignment.Left
-            ddBtn.Font = Enum.Font.Code
-            ddBtn.TextSize = 12
+            ddBtn.Font = Enum.Font.SourceSans
+            ddBtn.TextSize = 14
             ddBtn.Parent = Page
             Instance.new("UICorner", ddBtn).CornerRadius = UDim.new(0, 6)
             local stroke = Instance.new("UIStroke", ddBtn)
@@ -506,8 +506,8 @@ function LunarLib:CreateWindow(options)
             arrow.Position = UDim2.new(1, -25, 0, 0)
             arrow.BackgroundTransparency = 1
             arrow.Text = "▼"
-            arrow.Font = Enum.Font.Code
-            arrow.TextSize = 10
+            arrow.Font = Enum.Font.SourceSans
+            arrow.TextSize = 12
             arrow.Parent = ddBtn
             table.insert(Window.ThemedElements.SubText, arrow)
 
@@ -565,8 +565,8 @@ function LunarLib:CreateWindow(options)
                     optBtn.Size = UDim2.new(1, -8, 0, 24)
                     optBtn.BackgroundTransparency = 1
                     optBtn.Text = "  " .. tostring(opt)
-                    optBtn.Font = Enum.Font.Code
-                    optBtn.TextSize = 11
+                    optBtn.Font = Enum.Font.SourceSans
+                    optBtn.TextSize = 13
                     optBtn.TextXAlignment = Enum.TextXAlignment.Left
                     optBtn.Parent = listFrame
                     table.insert(Window.ThemedElements.Text, optBtn)
