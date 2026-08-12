@@ -78,7 +78,7 @@ function LunarLib:CreateWindow(options)
     local WindowTitle = options.Title or "Lunar UI"
     local DefaultTheme = options.Theme or "Midnight"
     local FolderName = options.Folder or "LunarConfigs"
-    local WindowSize = options.Size or UDim2.new(0, 280, 0, 360)
+    local WindowSize = options.Size or UDim2.new(0, 340, 0, 420)
     
     local Window = {
         ThemeIndex = 1,
@@ -202,7 +202,6 @@ function LunarLib:CreateWindow(options)
     PageContainer.BackgroundTransparency = 1
     PageContainer.Parent = MainFrame
 
-    -- Draggable Reopen Button (Circle)
     local OpenButton = Instance.new("TextButton")
     OpenButton.Size = UDim2.new(0, 40, 0, 40)
     OpenButton.Position = UDim2.new(0, 20, 0, 20)
@@ -362,35 +361,54 @@ function LunarLib:CreateWindow(options)
             local flag = opts.Flag or title
             local callback = opts.Callback or function() end
 
+            local hasColorpicker = opts.Colorpicker ~= nil
+            local hasKeybind = opts.Keybind ~= nil
+
+            local tglBgFrame = Instance.new("Frame")
+            tglBgFrame.Size = UDim2.new(1, 0, 0, 30)
+            tglBgFrame.BackgroundTransparency = 0.2
+            tglBgFrame.ClipsDescendants = true
+            tglBgFrame.Parent = Page
+            Instance.new("UICorner", tglBgFrame).CornerRadius = UDim.new(0, 6)
+            local stroke = makeStroke(tglBgFrame)
+            stroke.Transparency = 0.5
+            
+            table.insert(Window.ThemedElements.Bg, tglBgFrame)
+            table.insert(Window.ThemedElements.StrokeMain, stroke)
+
             local tglBtn = Instance.new("TextButton")
             tglBtn.Size = UDim2.new(1, 0, 0, 30)
-            tglBtn.BackgroundTransparency = 0.2
+            tglBtn.BackgroundTransparency = 1
             tglBtn.Text = "  " .. title
             tglBtn.TextXAlignment = Enum.TextXAlignment.Left
             tglBtn.TextSize = 13
-            tglBtn.Parent = Page
+            tglBtn.Parent = tglBgFrame
             applyCleanTextSettings(tglBtn)
-
-            Instance.new("UICorner", tglBtn).CornerRadius = UDim.new(0, 6)
-            local stroke = makeStroke(tglBtn)
-            stroke.Transparency = 0.5
-            
-            table.insert(Window.ThemedElements.Bg, tglBtn)
             table.insert(Window.ThemedElements.Text, tglBtn)
-            table.insert(Window.ThemedElements.StrokeMain, stroke)
 
+            local rightOffset = 8
+
+            -- Toggable Switch
             local switchBg = Instance.new("Frame")
             switchBg.Size = UDim2.new(0, 32, 0, 16)
-            switchBg.Position = UDim2.new(1, -40, 0.5, -8)
+            switchBg.Position = UDim2.new(1, -(rightOffset + 32), 0.5, -8)
             switchBg.BackgroundColor3 = Color3.fromRGB(25, 22, 35)
-            switchBg.Parent = tglBtn
+            switchBg.Parent = tglBgFrame
             Instance.new("UICorner", switchBg).CornerRadius = UDim.new(1, 0)
+
+            local switchBtn = Instance.new("TextButton")
+            switchBtn.Size = UDim2.new(1, 0, 1, 0)
+            switchBtn.BackgroundTransparency = 1
+            switchBtn.Text = ""
+            switchBtn.Parent = switchBg
 
             local knob = Instance.new("Frame")
             knob.Size = UDim2.new(0, 12, 0, 12)
             knob.Position = UDim2.new(0, 2, 0.5, -6)
             knob.Parent = switchBg
             Instance.new("UICorner", knob).CornerRadius = UDim.new(1, 0)
+
+            rightOffset = rightOffset + 32 + 8
 
             local Element = {Value = default}
             local tData = {bg = switchBg, knob = knob, state = Element.Value}
@@ -417,8 +435,253 @@ function LunarLib:CreateWindow(options)
                 Element.Value = not Element.Value
                 fire()
             end)
-            
+            switchBtn.MouseButton1Click:Connect(function()
+                Element.Value = not Element.Value
+                fire()
+            end)
+
             Window.Flags[flag] = Element
+
+            -- ==========================
+            -- KEYBIND SYSTEM
+            -- ==========================
+            if hasKeybind then
+                local kbDefault = opts.Keybind.Default or Enum.KeyCode.Unknown
+                local kbFlag = opts.Keybind.Flag or (flag .. "_Keybind")
+                local kbCallback = opts.Keybind.Callback or function() end
+
+                local kbBtn = Instance.new("TextButton")
+                kbBtn.Size = UDim2.new(0, 45, 0, 20)
+                kbBtn.Position = UDim2.new(1, -(rightOffset + 45), 0.5, -10)
+                kbBtn.BackgroundColor3 = Color3.fromRGB(25, 22, 35)
+                kbBtn.TextSize = 12
+                kbBtn.Parent = tglBgFrame
+                applyCleanTextSettings(kbBtn)
+                Instance.new("UICorner", kbBtn).CornerRadius = UDim.new(0, 4)
+                local kbStroke = makeStroke(kbBtn)
+                kbStroke.Transparency = 0.5
+                table.insert(Window.ThemedElements.SubText, kbBtn)
+
+                rightOffset = rightOffset + 45 + 8
+                local kbElement = {Value = kbDefault, Binding = false}
+
+                local function formatKeyName(key)
+                    if typeof(key) == "EnumItem" then
+                        if key.EnumType == Enum.KeyCode then
+                            if key == Enum.KeyCode.Unknown then return "None" end
+                            return key.Name
+                        elseif key.EnumType == Enum.UserInputType then
+                            return key.Name:gsub("MouseButton", "MB")
+                        end
+                    end
+                    return "None"
+                end
+
+                local function updateKbText()
+                    kbBtn.Text = formatKeyName(kbElement.Value)
+                end
+                updateKbText()
+
+                kbBtn.MouseButton1Click:Connect(function()
+                    kbElement.Binding = true
+                    kbBtn.Text = "..."
+                end)
+
+                UserInputService.InputBegan:Connect(function(input, gpe)
+                    if kbElement.Binding then
+                        if input.KeyCode == Enum.KeyCode.Backspace or input.KeyCode == Enum.KeyCode.Escape then
+                            kbElement.Value = Enum.KeyCode.Unknown
+                        elseif input.UserInputType == Enum.UserInputType.Keyboard then
+                            kbElement.Value = input.KeyCode
+                        elseif input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.MouseButton2 or input.UserInputType == Enum.UserInputType.MouseButton3 then
+                            kbElement.Value = input.UserInputType
+                        else
+                            return
+                        end
+                        kbElement.Binding = false
+                        updateKbText()
+                        kbCallback(kbElement.Value)
+                    elseif not gpe and not kbElement.Binding then
+                        if kbElement.Value ~= Enum.KeyCode.Unknown then
+                            if input.KeyCode == kbElement.Value or input.UserInputType == kbElement.Value then
+                                Element:Set(not Element.Value)
+                            end
+                        end
+                    end
+                end)
+
+                Window.Flags[kbFlag] = kbElement
+            end
+
+            -- ==========================
+            -- COLORPICKER SYSTEM
+            -- ==========================
+            if hasColorpicker then
+                local cpDefault = opts.Colorpicker.Default or Color3.new(1, 1, 1)
+                local cpFlag = opts.Colorpicker.Flag or (flag .. "_Color")
+                local cpCallback = opts.Colorpicker.Callback or function() end
+
+                local cpPreview = Instance.new("TextButton")
+                cpPreview.Size = UDim2.new(0, 20, 0, 20)
+                cpPreview.Position = UDim2.new(1, -(rightOffset + 20), 0.5, -10)
+                cpPreview.BackgroundColor3 = cpDefault
+                cpPreview.Text = ""
+                cpPreview.Parent = tglBgFrame
+                Instance.new("UICorner", cpPreview).CornerRadius = UDim.new(0, 4)
+                makeStroke(cpPreview).Transparency = 0.5
+                
+                rightOffset = rightOffset + 20 + 8
+
+                local cpContainer = Instance.new("Frame")
+                cpContainer.Size = UDim2.new(1, 0, 0, 110)
+                cpContainer.Position = UDim2.new(0, 0, 0, 30)
+                cpContainer.BackgroundTransparency = 1
+                cpContainer.Visible = false
+                cpContainer.Parent = tglBgFrame
+
+                local wheelBg = Instance.new("Frame")
+                wheelBg.Size = UDim2.new(0, 90, 0, 90)
+                wheelBg.Position = UDim2.new(0, 20, 0, 10)
+                wheelBg.BackgroundTransparency = 1
+                wheelBg.Parent = cpContainer
+                
+                local wheel = Instance.new("ImageLabel")
+                wheel.Size = UDim2.new(1, 0, 1, 0)
+                wheel.BackgroundTransparency = 1
+                wheel.Image = "rbxassetid://6020118596"
+                wheel.Parent = wheelBg
+
+                local wheelPicker = Instance.new("Frame")
+                wheelPicker.Size = UDim2.new(0, 10, 0, 10)
+                wheelPicker.AnchorPoint = Vector2.new(0.5, 0.5)
+                wheelPicker.BackgroundColor3 = Color3.new(1,1,1)
+                wheelPicker.Parent = wheel
+                Instance.new("UICorner", wheelPicker).CornerRadius = UDim.new(1, 0)
+                makeStroke(wheelPicker)
+
+                local darknessBg = Instance.new("Frame")
+                darknessBg.Size = UDim2.new(0, 20, 0, 90)
+                darknessBg.Position = UDim2.new(0, 130, 0, 10)
+                darknessBg.BackgroundColor3 = Color3.new(1, 1, 1)
+                darknessBg.Parent = cpContainer
+                Instance.new("UICorner", darknessBg).CornerRadius = UDim.new(0, 4)
+                makeStroke(darknessBg)
+
+                local darknessGradient = Instance.new("UIGradient")
+                darknessGradient.Rotation = 90
+                darknessGradient.Parent = darknessBg
+
+                local darknessPicker = Instance.new("Frame")
+                darknessPicker.Size = UDim2.new(1, 2, 0, 4)
+                darknessPicker.Position = UDim2.new(0, -1, 0, 0)
+                darknessPicker.AnchorPoint = Vector2.new(0, 0.5)
+                darknessPicker.BackgroundColor3 = Color3.new(1,1,1)
+                darknessPicker.Parent = darknessBg
+                makeStroke(darknessPicker)
+
+                local h, s, v = cpDefault:ToHSV()
+                local ColorElement = {Value = cpDefault, HSV = {h, s, v}}
+                
+                local function updateCpUI()
+                    local hue, sat, val = ColorElement.HSV[1], ColorElement.HSV[2], ColorElement.HSV[3]
+                    
+                    local angle = math.pi - (hue * math.pi * 2)
+                    local radius = (wheel.AbsoluteSize.X / 2) * sat
+                    local vector = Vector2.new(radius * math.cos(angle), radius * math.sin(angle))
+                    wheelPicker.Position = UDim2.new(0.5, -vector.X, 0.5, vector.Y)
+                    
+                    darknessGradient.Color = ColorSequence.new({
+                        ColorSequenceKeypoint.new(0, Color3.fromHSV(hue, sat, 1)),
+                        ColorSequenceKeypoint.new(1, Color3.new(0, 0, 0))
+                    })
+                    
+                    darknessPicker.Position = UDim2.new(0, -1, 1 - val, 0)
+                    ColorElement.Value = Color3.fromHSV(hue, sat, val)
+                    cpPreview.BackgroundColor3 = ColorElement.Value
+                end
+
+                local isOpen = false
+                cpPreview.MouseButton1Click:Connect(function()
+                    isOpen = not isOpen
+                    if isOpen then
+                        TweenService:Create(tglBgFrame, TweenInfo.new(0.2), {Size = UDim2.new(1, 0, 0, 140)}):Play()
+                        cpContainer.Visible = true
+                        updateCpUI()
+                    else
+                        TweenService:Create(tglBgFrame, TweenInfo.new(0.2), {Size = UDim2.new(1, 0, 0, 30)}):Play()
+                        task.delay(0.2, function() if not isOpen then cpContainer.Visible = false end end)
+                    end
+                end)
+
+                local draggingWheel = false
+                local draggingDarkness = false
+
+                local function updateWheelInput(input)
+                    local absX = wheel.AbsolutePosition.X + wheel.AbsoluteSize.X / 2
+                    local absY = wheel.AbsolutePosition.Y + wheel.AbsoluteSize.Y / 2
+                    local diffX = input.Position.X - absX
+                    local diffY = input.Position.Y - absY
+                    
+                    local hue = (math.pi - math.atan2(diffY, diffX)) / (math.pi * 2)
+                    local sat = math.clamp((Vector2.new(diffX, diffY).Magnitude) / (wheel.AbsoluteSize.X / 2), 0, 1)
+                    
+                    ColorElement.HSV[1] = hue
+                    ColorElement.HSV[2] = sat
+                    updateCpUI()
+                    cpCallback(ColorElement.Value)
+                end
+
+                local function updateDarknessInput(input)
+                    local absY = darknessBg.AbsolutePosition.Y
+                    local val = 1 - math.clamp((input.Position.Y - absY) / darknessBg.AbsoluteSize.Y, 0, 1)
+                    
+                    ColorElement.HSV[3] = val
+                    updateCpUI()
+                    cpCallback(ColorElement.Value)
+                end
+
+                wheel.InputBegan:Connect(function(input)
+                    if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+                        draggingWheel = true
+                        updateWheelInput(input)
+                    end
+                end)
+
+                darknessBg.InputBegan:Connect(function(input)
+                    if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+                        draggingDarkness = true
+                        updateDarknessInput(input)
+                    end
+                end)
+
+                UserInputService.InputEnded:Connect(function(input)
+                    if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+                        draggingWheel = false
+                        draggingDarkness = false
+                    end
+                end)
+
+                UserInputService.InputChanged:Connect(function(input)
+                    if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
+                        if draggingWheel then updateWheelInput(input) end
+                        if draggingDarkness then updateDarknessInput(input) end
+                    end
+                end)
+
+                function ColorElement:Set(val)
+                    local h, s, v = val:ToHSV()
+                    ColorElement.HSV = {h, s, v}
+                    updateCpUI()
+                    cpCallback(ColorElement.Value)
+                end
+                
+                Window.Flags[cpFlag] = ColorElement
+                updateCpUI()
+            end
+
+            -- Ensure the text toggle boundary doesn't overlap the keybind/colorpicker
+            tglBtn.Size = UDim2.new(1, -rightOffset, 0, 30)
+
             Window:ApplyTheme()
             fire()
             
@@ -793,3 +1056,4 @@ function LunarLib:CreateWindow(options)
 end
 
 return LunarLib
+
