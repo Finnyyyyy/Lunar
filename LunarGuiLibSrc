@@ -38,7 +38,7 @@ LunarLib.Themes = {
 
 local function makeStroke(parent)
     local stroke = Instance.new("UIStroke")
-    stroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Contextual -- PERFECT BORDERS RESTORED
+    stroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Contextual
     stroke.Transparency = 0.6
     stroke.Thickness = 1
     stroke.Parent = parent
@@ -114,6 +114,117 @@ function LunarLib:CreateWindow(options)
     local success = pcall(function() ScreenGui.Parent = CoreGui end)
     if not success then ScreenGui.Parent = Player:WaitForChild("PlayerGui") end
     Window.Gui = ScreenGui
+
+    -- ==========================================
+    -- NOTIFICATION SYSTEM SETUP
+    -- ==========================================
+    local NotifyContainer = Instance.new("Frame")
+    NotifyContainer.Name = "LunarNotifs"
+    NotifyContainer.Size = UDim2.new(0, 240, 1, -20)
+    NotifyContainer.Position = UDim2.new(1, -260, 0, 0)
+    NotifyContainer.BackgroundTransparency = 1
+    NotifyContainer.Parent = ScreenGui
+
+    local NotifyLayout = Instance.new("UIListLayout", NotifyContainer)
+    NotifyLayout.VerticalAlignment = Enum.VerticalAlignment.Bottom
+    NotifyLayout.SortOrder = Enum.SortOrder.LayoutOrder
+    NotifyLayout.Padding = UDim.new(0, 10)
+
+    function Window:Notify(opts)
+        local title = opts.Title or "Notification"
+        local content = opts.Content or ""
+        local duration = opts.Duration or 2
+
+        -- Invisible Wrapper for clean layout sliding
+        local wrapper = Instance.new("Frame")
+        wrapper.Size = UDim2.new(1, 0, 0, 55)
+        wrapper.BackgroundTransparency = 1
+        wrapper.Parent = NotifyContainer
+
+        local notif = Instance.new("Frame")
+        notif.Size = UDim2.new(1, 0, 1, 0)
+        notif.Position = UDim2.new(1, 40, 0, 0) -- Starts slightly to the right for slide-in
+        notif.BackgroundTransparency = 0.05
+        notif.BackgroundColor3 = self.CurrentTheme.Bg
+        notif.Parent = wrapper
+        Instance.new("UICorner", notif).CornerRadius = UDim.new(0, 6)
+
+        local stroke = makeStroke(notif)
+        stroke.Color = self.CurrentTheme.Main
+
+        local titleLbl = Instance.new("TextLabel")
+        titleLbl.Size = UDim2.new(1, -40, 0, 20)
+        titleLbl.Position = UDim2.new(0, 10, 0, 6)
+        titleLbl.BackgroundTransparency = 1
+        titleLbl.Text = title
+        titleLbl.TextSize = 14
+        titleLbl.Font = Enum.Font.GothamBold
+        titleLbl.TextColor3 = self.CurrentTheme.Text
+        titleLbl.TextXAlignment = Enum.TextXAlignment.Left
+        titleLbl.Parent = notif
+        
+        local textGlow = Instance.new("UIStroke")
+        textGlow.ApplyStrokeMode = Enum.ApplyStrokeMode.Contextual
+        textGlow.Thickness = 0.7
+        textGlow.Transparency = 0.15
+        textGlow.Color = self.CurrentTheme.Main
+        textGlow.Parent = titleLbl
+
+        local descLbl = Instance.new("TextLabel")
+        descLbl.Size = UDim2.new(1, -40, 0, 20)
+        descLbl.Position = UDim2.new(0, 10, 0, 26)
+        descLbl.BackgroundTransparency = 1
+        descLbl.Text = content
+        descLbl.TextSize = 12
+        descLbl.Font = Enum.Font.Gotham
+        descLbl.TextColor3 = self.CurrentTheme.SubText
+        descLbl.TextXAlignment = Enum.TextXAlignment.Left
+        descLbl.Parent = notif
+
+        local checkBtn = Instance.new("TextButton")
+        checkBtn.Size = UDim2.new(0, 24, 0, 24)
+        checkBtn.Position = UDim2.new(1, -30, 0.5, -12)
+        checkBtn.BackgroundTransparency = 1
+        checkBtn.Text = "✓"
+        checkBtn.TextSize = 18
+        checkBtn.Font = Enum.Font.GothamBold
+        checkBtn.TextColor3 = self.CurrentTheme.Main
+        checkBtn.Parent = notif
+        
+        local checkGlow = Instance.new("UIStroke")
+        checkGlow.ApplyStrokeMode = Enum.ApplyStrokeMode.Contextual
+        checkGlow.Thickness = 0.7
+        checkGlow.Transparency = 0.15
+        checkGlow.Color = self.CurrentTheme.Main
+        checkGlow.Parent = checkBtn
+
+        -- Slide In Animation
+        TweenService:Create(notif, TweenInfo.new(0.4, Enum.EasingStyle.Quart, Enum.EasingDirection.Out), {Position = UDim2.new(0, 0, 0, 0)}):Play()
+
+        local isDismissed = false
+        local function dismiss()
+            if isDismissed then return end
+            isDismissed = true
+            local tw = TweenService:Create(notif, TweenInfo.new(0.4, Enum.EasingStyle.Quart, Enum.EasingDirection.In), {Position = UDim2.new(1, 50, 0, 0), BackgroundTransparency = 1})
+            TweenService:Create(titleLbl, TweenInfo.new(0.4), {TextTransparency = 1}):Play()
+            TweenService:Create(descLbl, TweenInfo.new(0.4), {TextTransparency = 1}):Play()
+            TweenService:Create(checkBtn, TweenInfo.new(0.4), {TextTransparency = 1}):Play()
+            TweenService:Create(stroke, TweenInfo.new(0.4), {Transparency = 1}):Play()
+            tw:Play()
+            tw.Completed:Connect(function()
+                wrapper:Destroy()
+            end)
+        end
+
+        checkBtn.MouseButton1Click:Connect(dismiss)
+
+        -- Auto dismiss after duration
+        task.spawn(function()
+            task.wait(duration)
+            dismiss()
+        end)
+    end
+    -- ==========================================
 
     function Window:ApplyTheme()
         local t = self.CurrentTheme
@@ -883,6 +994,8 @@ function LunarLib:CreateWindow(options)
                 saveConfigData(name)
                 configDropdown:Refresh(getConfigs())
                 configDropdown:Set(name)
+                -- Trigger Notification
+                self:Notify({Title = "Config Saved", Content = "Successfully saved " .. name .. ".json"})
             end
         })
 
@@ -915,6 +1028,8 @@ function LunarLib:CreateWindow(options)
                                 end)
                             end
                         end
+                        -- Trigger Notification
+                        self:Notify({Title = "Config Loaded", Content = "Successfully loaded " .. name .. ".json"})
                     end
                 end
             end
@@ -926,6 +1041,8 @@ function LunarLib:CreateWindow(options)
                 local name = configDropdown.Value
                 if name == "None" or name == nil or name == "" then return end
                 saveConfigData(name)
+                -- Trigger Notification
+                self:Notify({Title = "Config Overwritten", Content = "Updated " .. name .. ".json"})
             end
         })
 
@@ -939,6 +1056,8 @@ function LunarLib:CreateWindow(options)
                     delfile(path)
                     configDropdown:Refresh(getConfigs())
                     configDropdown:Set(getConfigs()[1])
+                    -- Trigger Notification
+                    self:Notify({Title = "Config Deleted", Content = "Removed " .. name .. ".json"})
                 end
             end
         })
