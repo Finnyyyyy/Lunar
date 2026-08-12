@@ -62,6 +62,7 @@ function LunarLib:CreateWindow(options)
     local WindowTitle = options.Title or "Lunar UI"
     local DefaultTheme = options.Theme or "Midnight"
     local FolderName = options.Folder or "LunarConfigs"
+    local WindowSize = options.Size or UDim2.new(0, 280, 0, 400)
     
     local Window = {
         ThemeIndex = 1,
@@ -123,8 +124,8 @@ function LunarLib:CreateWindow(options)
     end
 
     local MainFrame = Instance.new("Frame")
-    MainFrame.Size = UDim2.new(0, 240, 0, 300)
-    MainFrame.Position = UDim2.new(0.5, -120, 0.5, -150)
+    MainFrame.Size = WindowSize
+    MainFrame.Position = UDim2.new(0.5, - (WindowSize.X.Offset / 2), 0.5, - (WindowSize.Y.Offset / 2))
     MainFrame.BackgroundColor3 = Window.CurrentTheme.Bg
     MainFrame.BackgroundTransparency = 0.05
     MainFrame.BorderSizePixel = 0
@@ -151,7 +152,7 @@ function LunarLib:CreateWindow(options)
     Title.Position = UDim2.new(0, 15, 0, 0)
     Title.BackgroundTransparency = 1
     Title.Text = WindowTitle
-    Title.Font = Enum.Font.GothamBold
+    Title.Font = Enum.Font.Code
     Title.TextSize = 14
     Title.TextXAlignment = Enum.TextXAlignment.Left
     Title.Parent = Header
@@ -189,11 +190,11 @@ function LunarLib:CreateWindow(options)
     MinimizeBtn.MouseButton1Click:Connect(function()
         minimized = not minimized
         if minimized then
-            TweenService:Create(MainFrame, TweenInfo.new(0.3, Enum.EasingStyle.Quart), {Size = UDim2.new(0, 240, 0, 50)}):Play()
+            TweenService:Create(MainFrame, TweenInfo.new(0.3, Enum.EasingStyle.Quart), {Size = UDim2.new(0, WindowSize.X.Offset, 0, 50)}):Play()
             TabContainer.Visible = false
             PageContainer.Visible = false
         else
-            TweenService:Create(MainFrame, TweenInfo.new(0.3, Enum.EasingStyle.Quart), {Size = UDim2.new(0, 240, 0, 300)}):Play()
+            TweenService:Create(MainFrame, TweenInfo.new(0.3, Enum.EasingStyle.Quart), {Size = WindowSize}):Play()
             TabContainer.Visible = true
             PageContainer.Visible = true
         end
@@ -208,8 +209,8 @@ function LunarLib:CreateWindow(options)
         TabBtn.Size = UDim2.new(0, 80, 1, 0)
         TabBtn.BackgroundTransparency = 0.3
         TabBtn.Text = name
-        TabBtn.Font = Enum.Font.GothamMedium
-        TabBtn.TextSize = 11
+        TabBtn.Font = Enum.Font.Code
+        TabBtn.TextSize = 12
         TabBtn.Parent = TabContainer
         Instance.new("UICorner", TabBtn).CornerRadius = UDim.new(0, 6)
         local TabStroke = Instance.new("UIStroke", TabBtn)
@@ -258,7 +259,7 @@ function LunarLib:CreateWindow(options)
             BtnFrame.Size = UDim2.new(1, 0, 0, 32)
             BtnFrame.BackgroundTransparency = 0.2
             BtnFrame.Text = title
-            BtnFrame.Font = Enum.Font.GothamMedium
+            BtnFrame.Font = Enum.Font.Code
             BtnFrame.TextSize = 12
             BtnFrame.Parent = Page
             Instance.new("UICorner", BtnFrame).CornerRadius = UDim.new(0, 6)
@@ -293,7 +294,7 @@ function LunarLib:CreateWindow(options)
             box.BackgroundTransparency = 1
             box.Text = ""
             box.PlaceholderText = placeholder
-            box.Font = Enum.Font.GothamMedium
+            box.Font = Enum.Font.Code
             box.TextSize = 12
             box.TextXAlignment = Enum.TextXAlignment.Left
             box.Parent = boxFrame
@@ -326,7 +327,7 @@ function LunarLib:CreateWindow(options)
             tglBtn.BackgroundTransparency = 0.2
             tglBtn.Text = "  " .. title
             tglBtn.TextXAlignment = Enum.TextXAlignment.Left
-            tglBtn.Font = Enum.Font.GothamMedium
+            tglBtn.Font = Enum.Font.Code
             tglBtn.TextSize = 12
             tglBtn.Parent = Page
             Instance.new("UICorner", tglBtn).CornerRadius = UDim.new(0, 6)
@@ -406,7 +407,7 @@ function LunarLib:CreateWindow(options)
             label.Position = UDim2.new(0, 8, 0, 0)
             label.BackgroundTransparency = 1
             label.Text = title
-            label.Font = Enum.Font.GothamMedium
+            label.Font = Enum.Font.Code
             label.TextSize = 12
             label.TextXAlignment = Enum.TextXAlignment.Left
             label.Parent = sliderFrame
@@ -417,7 +418,7 @@ function LunarLib:CreateWindow(options)
             valLabel.Position = UDim2.new(1, -48, 0, 0)
             valLabel.BackgroundTransparency = 1
             valLabel.Text = tostring(default)
-            valLabel.Font = Enum.Font.Gotham
+            valLabel.Font = Enum.Font.Code
             valLabel.TextSize = 11
             valLabel.TextXAlignment = Enum.TextXAlignment.Right
             valLabel.Parent = sliderFrame
@@ -490,7 +491,7 @@ function LunarLib:CreateWindow(options)
             ddBtn.BackgroundTransparency = 0.2
             ddBtn.Text = "  " .. title .. ": " .. tostring(default)
             ddBtn.TextXAlignment = Enum.TextXAlignment.Left
-            ddBtn.Font = Enum.Font.GothamMedium
+            ddBtn.Font = Enum.Font.Code
             ddBtn.TextSize = 12
             ddBtn.Parent = Page
             Instance.new("UICorner", ddBtn).CornerRadius = UDim.new(0, 6)
@@ -505,7 +506,7 @@ function LunarLib:CreateWindow(options)
             arrow.Position = UDim2.new(1, -25, 0, 0)
             arrow.BackgroundTransparency = 1
             arrow.Text = "▼"
-            arrow.Font = Enum.Font.Gotham
+            arrow.Font = Enum.Font.Code
             arrow.TextSize = 10
             arrow.Parent = ddBtn
             table.insert(Window.ThemedElements.SubText, arrow)
@@ -564,7 +565,7 @@ function LunarLib:CreateWindow(options)
                     optBtn.Size = UDim2.new(1, -8, 0, 24)
                     optBtn.BackgroundTransparency = 1
                     optBtn.Text = "  " .. tostring(opt)
-                    optBtn.Font = Enum.Font.Gotham
+                    optBtn.Font = Enum.Font.Code
                     optBtn.TextSize = 11
                     optBtn.TextXAlignment = Enum.TextXAlignment.Left
                     optBtn.Parent = listFrame
