@@ -36,23 +36,9 @@ LunarLib.Themes = {
     {Name = "Custom", Bg = Color3.fromRGB(30, 30, 30), Main = Color3.fromRGB(220, 220, 220), Accent = Color3.fromRGB(200, 200, 200), Text = Color3.fromRGB(255, 255, 255), SubText = Color3.fromRGB(160, 160, 160)}
 }
 
-local function applyCleanTextSettings(obj)
-    if obj:IsA("TextLabel") or obj:IsA("TextButton") or obj:IsA("TextBox") then
-        obj.Font = Enum.Font.GothamBold 
-        obj.TextStrokeTransparency = 1 
-        
-        local textStroke = Instance.new("UIStroke")
-        textStroke.Name = "NeonGlow"
-        textStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Contextual
-        textStroke.Thickness = 1
-        textStroke.Transparency = 0.15
-        textStroke.Parent = obj
-    end
-end
-
 local function makeStroke(parent)
     local stroke = Instance.new("UIStroke")
-    stroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Contextual 
+    stroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
     stroke.Transparency = 0.6
     stroke.Thickness = 1
     stroke.Parent = parent
@@ -90,13 +76,33 @@ function LunarLib:CreateWindow(options)
     local Window = {
         ThemeIndex = 1,
         CurrentTheme = nil,
-        ThemedElements = {Bg = {}, Main = {}, Accent = {}, Text = {}, SubText = {}, StrokeMain = {}},
+        ThemedElements = {Bg = {}, Main = {}, Accent = {}, Text = {}, SubText = {}, StrokeMain = {}, TextGlow = {}},
         ActiveToggles = {},
         Tabs = {},
         FirstTab = nil,
         Flags = {}, 
         Folder = FolderName
     }
+
+    -- Centralized text styling for bolding and neon intensity
+    local function applyTextStyle(obj, isBold, neonType)
+        if obj:IsA("TextLabel") or obj:IsA("TextButton") or obj:IsA("TextBox") then
+            -- Gotham fits neon/modern vibes much better than Arial
+            obj.Font = isBold and Enum.Font.GothamBold or Enum.Font.GothamMedium
+            obj.TextStrokeTransparency = 1 
+            
+            if neonType == "Full" or neonType == "Dim" then
+                local glow = Instance.new("UIStroke")
+                glow.ApplyStrokeMode = Enum.ApplyStrokeMode.Contextual
+                glow.Thickness = (neonType == "Full") and 1.2 or 0.5
+                glow.Transparency = (neonType == "Full") and 0 or 0.6
+                glow.Parent = obj
+                table.insert(Window.ThemedElements.TextGlow, glow)
+                return glow
+            end
+        end
+        return nil
+    end
 
     for i, t in ipairs(LunarLib.Themes) do
         if t.Name == DefaultTheme then
@@ -117,21 +123,11 @@ function LunarLib:CreateWindow(options)
         local t = self.CurrentTheme
         for _, obj in ipairs(self.ThemedElements.Bg) do if obj then pcall(function() obj.BackgroundColor3 = t.Bg end) end end
         for _, obj in ipairs(self.ThemedElements.Main) do if obj then pcall(function() if obj:IsA("TextLabel") or obj:IsA("TextButton") or obj:IsA("TextBox") then obj.TextColor3 = t.Main else obj.BackgroundColor3 = t.Main end end) end end
+        for _, obj in ipairs(self.ThemedElements.Text) do if obj then pcall(function() if obj:IsA("TextLabel") or obj:IsA("TextBox") or obj:IsA("TextButton") then obj.TextColor3 = t.Text else obj.BackgroundColor3 = t.Text end end) end end
         
-        for _, obj in ipairs(self.ThemedElements.Text) do 
-            if obj then 
-                pcall(function() 
-                    if obj:IsA("TextLabel") or obj:IsA("TextBox") or obj:IsA("TextButton") then 
-                        obj.TextColor3 = t.Text 
-                        local glow = obj:FindFirstChild("NeonGlow")
-                        if glow then glow.Color = t.Main end
-                    else 
-                        obj.BackgroundColor3 = t.Text 
-                    end 
-                end) 
-            end 
-        end
-        
+        -- Apply Theme Main Color to our Neon Text Glows
+        for _, obj in ipairs(self.ThemedElements.TextGlow) do if obj then pcall(function() obj.Color = t.Main end) end end
+
         for _, obj in ipairs(self.ThemedElements.SubText) do 
             if obj then 
                 pcall(function() 
@@ -189,7 +185,7 @@ function LunarLib:CreateWindow(options)
     Title.TextSize = 15
     Title.TextXAlignment = Enum.TextXAlignment.Left
     Title.Parent = Header
-    applyCleanTextSettings(Title)
+    applyTextStyle(Title, true, "Full") -- Bold, Full Neon
     table.insert(Window.ThemedElements.Text, Title)
 
     local MinimizeBtn = Instance.new("TextButton")
@@ -199,7 +195,7 @@ function LunarLib:CreateWindow(options)
     MinimizeBtn.Text = "🌙"
     MinimizeBtn.TextSize = 14
     MinimizeBtn.Parent = Header
-    applyCleanTextSettings(MinimizeBtn)
+    applyTextStyle(MinimizeBtn, true, "Full") -- Bold, Full Neon
     table.insert(Window.ThemedElements.Text, MinimizeBtn)
 
     local TabContainer = Instance.new("ScrollingFrame")
@@ -232,7 +228,7 @@ function LunarLib:CreateWindow(options)
     OpenButton.Visible = false
     OpenButton.Active = true
     OpenButton.Parent = ScreenGui
-    applyCleanTextSettings(OpenButton)
+    applyTextStyle(OpenButton, true, "Full") -- Bold, Full Neon
     
     local OpenCorner = Instance.new("UICorner")
     OpenCorner.CornerRadius = UDim.new(1, 0)
@@ -256,8 +252,6 @@ function LunarLib:CreateWindow(options)
         OpenButton.Visible = false
     end)
 
-    Window.ApplyTheme(Window)
-
     function Window:CreateTab(name)
         local Tab = {}
         
@@ -267,7 +261,9 @@ function LunarLib:CreateWindow(options)
         TabBtn.Text = name
         TabBtn.TextSize = 13
         TabBtn.Parent = TabContainer
-        applyCleanTextSettings(TabBtn)
+        
+        -- Tabs are bold. By default we set them to 'Dim' neon until they are selected.
+        local tabTextGlow = applyTextStyle(TabBtn, true, "Dim") 
 
         Instance.new("UICorner", TabBtn).CornerRadius = UDim.new(0, 6)
         local TabStroke = makeStroke(TabBtn)
@@ -291,21 +287,24 @@ function LunarLib:CreateWindow(options)
         PageLayout.SortOrder = Enum.SortOrder.LayoutOrder
         PageLayout.Padding = UDim.new(0, 6)
 
-        table.insert(Window.Tabs, {Btn = TabBtn, Page = Page, Stroke = TabStroke})
+        table.insert(Window.Tabs, {Btn = TabBtn, Page = Page, Stroke = TabStroke, TextGlow = tabTextGlow})
 
         if not Window.FirstTab then
             Window.FirstTab = Page
             Page.Visible = true
             TabStroke.Transparency = 0
+            if tabTextGlow then tabTextGlow.Transparency = 0 end -- First tab becomes Full neon immediately
         end
 
         TabBtn.MouseButton1Click:Connect(function()
             for _, t in ipairs(Window.Tabs) do
                 t.Page.Visible = false
                 t.Stroke.Transparency = 0.7
+                if t.TextGlow then t.TextGlow.Transparency = 0.6 end -- Dim all other tabs
             end
             Page.Visible = true
             TabStroke.Transparency = 0
+            if tabTextGlow then tabTextGlow.Transparency = 0 end -- Full neon for the selected tab
         end)
 
         function Tab:CreateButton(opts)
@@ -318,7 +317,7 @@ function LunarLib:CreateWindow(options)
             BtnFrame.Text = title
             BtnFrame.TextSize = 13
             BtnFrame.Parent = Page
-            applyCleanTextSettings(BtnFrame)
+            applyTextStyle(BtnFrame, true, "Full") -- Important Button = Bold, Full Neon
 
             Instance.new("UICorner", BtnFrame).CornerRadius = UDim.new(0, 6)
             local stroke = makeStroke(BtnFrame)
@@ -355,7 +354,7 @@ function LunarLib:CreateWindow(options)
             box.TextSize = 13
             box.TextXAlignment = Enum.TextXAlignment.Left
             box.Parent = boxFrame
-            applyCleanTextSettings(box)
+            applyTextStyle(box, false, "Dim") -- Textbox = Not Bold, Dim Neon
 
             table.insert(Window.ThemedElements.Text, box)
 
@@ -388,7 +387,7 @@ function LunarLib:CreateWindow(options)
             tglBtn.TextXAlignment = Enum.TextXAlignment.Left
             tglBtn.TextSize = 13
             tglBtn.Parent = Page
-            applyCleanTextSettings(tglBtn)
+            applyTextStyle(tglBtn, false, "Dim") -- Toggle Text = Not Bold, Dim Neon
 
             Instance.new("UICorner", tglBtn).CornerRadius = UDim.new(0, 6)
             local stroke = makeStroke(tglBtn)
@@ -470,7 +469,7 @@ function LunarLib:CreateWindow(options)
             label.TextSize = 13
             label.TextXAlignment = Enum.TextXAlignment.Left
             label.Parent = sliderFrame
-            applyCleanTextSettings(label)
+            applyTextStyle(label, false, "Dim") -- Slider Text = Not Bold, Dim Neon
 
             table.insert(Window.ThemedElements.Text, label)
 
@@ -482,7 +481,7 @@ function LunarLib:CreateWindow(options)
             valLabel.TextSize = 12
             valLabel.TextXAlignment = Enum.TextXAlignment.Right
             valLabel.Parent = sliderFrame
-            applyCleanTextSettings(valLabel)
+            applyTextStyle(valLabel, false, "Dim") -- Value Text = Not Bold, Dim Neon
 
             table.insert(Window.ThemedElements.SubText, valLabel)
 
@@ -555,7 +554,7 @@ function LunarLib:CreateWindow(options)
             ddBtn.TextXAlignment = Enum.TextXAlignment.Left
             ddBtn.TextSize = 13
             ddBtn.Parent = Page
-            applyCleanTextSettings(ddBtn)
+            applyTextStyle(ddBtn, false, "Dim") -- Dropdown Header = Not Bold, Dim Neon
 
             Instance.new("UICorner", ddBtn).CornerRadius = UDim.new(0, 6)
             local stroke = makeStroke(ddBtn)
@@ -571,7 +570,7 @@ function LunarLib:CreateWindow(options)
             arrow.Text = "▼"
             arrow.TextSize = 11
             arrow.Parent = ddBtn
-            applyCleanTextSettings(arrow)
+            applyTextStyle(arrow, false, "None") -- Arrow = Just normal text
 
             table.insert(Window.ThemedElements.SubText, arrow)
 
@@ -632,7 +631,7 @@ function LunarLib:CreateWindow(options)
                     optBtn.TextSize = 12
                     optBtn.TextXAlignment = Enum.TextXAlignment.Left
                     optBtn.Parent = listFrame
-                    applyCleanTextSettings(optBtn)
+                    applyTextStyle(optBtn, false, "None") -- Dropdown options = Not Bold, No Neon
 
                     table.insert(Window.ThemedElements.Text, optBtn)
 
@@ -659,159 +658,6 @@ function LunarLib:CreateWindow(options)
             Window.Flags[flag] = Element
             Element:Set(default)
             
-            return Element
-        end
-
-        function Tab:CreateColorPicker(opts)
-            local title = opts.Name or "Color Picker"
-            local default = opts.Default or Color3.fromRGB(255, 255, 255)
-            local flag = opts.Flag or title
-            local callback = opts.Callback or function() end
-
-            local cpBtn = Instance.new("TextButton")
-            cpBtn.Size = UDim2.new(1, 0, 0, 30)
-            cpBtn.BackgroundTransparency = 0.2
-            cpBtn.Text = "  " .. title
-            cpBtn.TextXAlignment = Enum.TextXAlignment.Left
-            cpBtn.TextSize = 13
-            cpBtn.Parent = Page
-            applyCleanTextSettings(cpBtn)
-
-            Instance.new("UICorner", cpBtn).CornerRadius = UDim.new(0, 6)
-            local stroke = makeStroke(cpBtn)
-
-            table.insert(Window.ThemedElements.Bg, cpBtn)
-            table.insert(Window.ThemedElements.Text, cpBtn)
-            table.insert(Window.ThemedElements.StrokeMain, stroke)
-
-            local colorPreview = Instance.new("Frame")
-            colorPreview.Size = UDim2.new(0, 20, 0, 16)
-            colorPreview.Position = UDim2.new(1, -30, 0.5, -8)
-            colorPreview.BackgroundColor3 = default
-            colorPreview.Parent = cpBtn
-            Instance.new("UICorner", colorPreview).CornerRadius = UDim.new(0, 4)
-            local previewStroke = makeStroke(colorPreview)
-            table.insert(Window.ThemedElements.StrokeMain, previewStroke)
-
-            local cpFrame = Instance.new("Frame")
-            cpFrame.Size = UDim2.new(1, 0, 0, 0)
-            cpFrame.BackgroundTransparency = 0.2
-            cpFrame.ClipsDescendants = true
-            cpFrame.Visible = false
-            cpFrame.Parent = Page
-            Instance.new("UICorner", cpFrame).CornerRadius = UDim.new(0, 6)
-            local cpFrameStroke = makeStroke(cpFrame)
-            
-            table.insert(Window.ThemedElements.Bg, cpFrame)
-            table.insert(Window.ThemedElements.StrokeMain, cpFrameStroke)
-
-            local wheel = Instance.new("ImageButton")
-            wheel.Size = UDim2.new(0, 100, 0, 100)
-            wheel.Position = UDim2.new(0, 10, 0, 10)
-            wheel.Image = "rbxassetid://6020299385" 
-            wheel.BackgroundTransparency = 1
-            wheel.Parent = cpFrame
-
-            local wheelSelector = Instance.new("Frame")
-            wheelSelector.Size = UDim2.new(0, 8, 0, 8)
-            wheelSelector.Position = UDim2.new(0.5, -4, 0.5, -4)
-            wheelSelector.BackgroundColor3 = Color3.new(1, 1, 1)
-            wheelSelector.Parent = wheel
-            Instance.new("UICorner", wheelSelector).CornerRadius = UDim.new(1, 0)
-
-            local valBg = Instance.new("Frame")
-            valBg.Size = UDim2.new(1, -130, 0, 20)
-            valBg.Position = UDim2.new(0, 120, 0, 10)
-            valBg.Parent = cpFrame
-            Instance.new("UICorner", valBg).CornerRadius = UDim.new(0, 4)
-            
-            local valGradient = Instance.new("UIGradient")
-            valGradient.Parent = valBg
-
-            local valSlider = Instance.new("TextButton")
-            valSlider.Size = UDim2.new(1, 0, 1, 0)
-            valSlider.BackgroundTransparency = 1
-            valSlider.Text = ""
-            valSlider.Parent = valBg
-
-            local valMarker = Instance.new("Frame")
-            valMarker.Size = UDim2.new(0, 4, 1, 4)
-            valMarker.Position = UDim2.new(1, -2, 0, -2)
-            valMarker.BackgroundColor3 = Color3.new(1,1,1)
-            valMarker.Parent = valBg
-            
-            local h, s, v = Color3.toHSV(default)
-            local Element = {Value = default}
-
-            local function updateColor()
-                local c = Color3.fromHSV(h, s, v)
-                Element.Value = c
-                colorPreview.BackgroundColor3 = c
-                valGradient.Color = ColorSequence.new({ColorSequenceKeypoint.new(0, Color3.new(0,0,0)), ColorSequenceKeypoint.new(1, Color3.fromHSV(h, s, 1))})
-                callback(c)
-            end
-
-            local wheelDown, valDown = false, false
-
-            wheel.MouseButton1Down:Connect(function() wheelDown = true end)
-            valSlider.MouseButton1Down:Connect(function() valDown = true end)
-
-            UserInputService.InputEnded:Connect(function(input)
-                if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
-                    wheelDown = false
-                    valDown = false
-                end
-            end)
-
-            UserInputService.InputChanged:Connect(function(input)
-                if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
-                    if wheelDown then
-                        local center = wheel.AbsolutePosition + (wheel.AbsoluteSize/2)
-                        local x = input.Position.X - center.X
-                        local y = input.Position.Y - center.Y
-                        local radius = wheel.AbsoluteSize.X / 2
-                        local dist = math.sqrt(x^2 + y^2)
-                        
-                        if dist <= radius then
-                            wheelSelector.Position = UDim2.new(0, (x + radius) - 4, 0, (y + radius) - 4)
-                        else
-                            local angle = math.atan2(y, x)
-                            wheelSelector.Position = UDim2.new(0, (math.cos(angle) * radius + radius) - 4, 0, (math.sin(angle) * radius + radius) - 4)
-                        end
-                        
-                        h = (math.atan2(y, x) / (math.pi * 2)) + 0.5
-                        s = math.clamp(dist / radius, 0, 1)
-                        updateColor()
-                    elseif valDown then
-                        local pos = math.clamp((input.Position.X - valBg.AbsolutePosition.X) / valBg.AbsoluteSize.X, 0, 1)
-                        valMarker.Position = UDim2.new(pos, -2, 0, -2)
-                        v = pos
-                        updateColor()
-                    end
-                end
-            end)
-
-            local isOpen = false
-            cpBtn.MouseButton1Click:Connect(function()
-                isOpen = not isOpen
-                if isOpen then
-                    cpFrame.Visible = true
-                    TweenService:Create(cpFrame, TweenInfo.new(0.3), {Size = UDim2.new(1, 0, 0, 120)}):Play()
-                else
-                    local tw = TweenService:Create(cpFrame, TweenInfo.new(0.3), {Size = UDim2.new(1, 0, 0, 0)})
-                    tw:Play()
-                    tw.Completed:Wait()
-                    if not isOpen then cpFrame.Visible = false end
-                end
-            end)
-
-            function Element:Set(col)
-                h, s, v = Color3.toHSV(col)
-                updateColor()
-            end
-
-            Window.Flags[flag] = Element
-            updateColor()
             return Element
         end
 
@@ -862,34 +708,27 @@ function LunarLib:CreateWindow(options)
 
         configNameBox = SettingsTab:CreateTextbox({
             Name = "Config Name",
-            Placeholder = "Enter new config name..."
+            Placeholder = "Enter config name..."
         })
 
-        -- Reusable config saving function
-        local function saveConfigData(name)
-            local data = {}
-            for flagName, element in pairs(self.Flags) do
-                if flagName ~= "Select Theme" and flagName ~= "Config Name" and flagName ~= "Select Config" then
-                    if typeof(element.Value) == "Color3" then
-                        data[flagName] = {R = element.Value.R, G = element.Value.G, B = element.Value.B, IsColor3 = true}
-                    else
-                        data[flagName] = element.Value
-                    end
-                end
-            end
-            if writefile then
-                writefile(self.Folder .. "/" .. name .. ".json", HttpService:JSONEncode(data))
-            end
-        end
-
         SettingsTab:CreateButton({
-            Name = "Save New Config",
+            Name = "Save Config",
             Callback = function()
                 local name = configNameBox.Value
                 if name == "" then return end
-                saveConfigData(name)
-                configDropdown:Refresh(getConfigs())
-                configDropdown:Set(name)
+                
+                local data = {}
+                for flagName, element in pairs(self.Flags) do
+                    if flagName ~= "Select Theme" and flagName ~= "Config Name" and flagName ~= "Select Config" then
+                        data[flagName] = element.Value
+                    end
+                end
+                
+                if writefile then
+                    writefile(self.Folder .. "/" .. name .. ".json", HttpService:JSONEncode(data))
+                    configDropdown:Refresh(getConfigs())
+                    configDropdown:Set(name)
+                end
             end
         })
 
@@ -897,6 +736,27 @@ function LunarLib:CreateWindow(options)
             Name = "Select Config",
             Options = getConfigs(),
             Callback = function() end
+        })
+
+        SettingsTab:CreateButton({
+            Name = "Overwrite Config",
+            Callback = function()
+                local name = configDropdown.Value
+                if name == "None" or name == nil or name == "" then return end
+                
+                local data = {}
+                for flagName, element in pairs(self.Flags) do
+                    if flagName ~= "Select Theme" and flagName ~= "Config Name" and flagName ~= "Select Config" then
+                        data[flagName] = element.Value
+                    end
+                end
+                
+                if writefile then
+                    writefile(self.Folder .. "/" .. name .. ".json", HttpService:JSONEncode(data))
+                    configDropdown:Refresh(getConfigs())
+                    configDropdown:Set(name)
+                end
+            end
         })
 
         SettingsTab:CreateButton({
@@ -914,26 +774,12 @@ function LunarLib:CreateWindow(options)
                         for flagName, value in pairs(decoded) do
                             if self.Flags[flagName] then
                                 pcall(function()
-                                    if type(value) == "table" and value.IsColor3 then
-                                        self.Flags[flagName]:Set(Color3.new(value.R, value.G, value.B))
-                                    else
-                                        self.Flags[flagName]:Set(value)
-                                    end
+                                    self.Flags[flagName]:Set(value)
                                 end)
                             end
                         end
                     end
                 end
-            end
-        })
-
-        -- NEW: Overwrite Config Feature
-        SettingsTab:CreateButton({
-            Name = "Overwrite Current Config",
-            Callback = function()
-                local name = configDropdown.Value
-                if name == "None" or name == nil or name == "" then return end
-                saveConfigData(name)
             end
         })
 
@@ -958,12 +804,11 @@ function LunarLib:CreateWindow(options)
             end
         })
         
-        -- BUG FIX: Ensure all the buttons we just created get their initial theme colors mapped properly!
-        self:ApplyTheme()
-        
         return SettingsTab
     end
 
+    -- Run theme application right before returning Window
+    Window:ApplyTheme()
     return Window
 end
 
