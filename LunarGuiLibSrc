@@ -39,8 +39,8 @@ LunarLib.Themes = {
 local function applyCleanTextSettings(obj)
     if obj:IsA("TextLabel") or obj:IsA("TextButton") or obj:IsA("TextBox") then
         obj.Font = Enum.Font.Arial
-        -- A subtle neon glow effect (not too blinding!)
-        obj.TextStrokeTransparency = 0.6 
+        -- 0 is fully visible in Roblox, giving it the original bright neon glow
+        obj.TextStrokeTransparency = 0 
     end
 end
 
@@ -139,7 +139,8 @@ function LunarLib:CreateWindow(options)
     Wheel.Size = UDim2.new(1, -20, 1, -20)
     Wheel.Position = UDim2.new(0, 10, 0, 10)
     Wheel.BackgroundTransparency = 1
-    Wheel.Image = "rbxassetid://2849458409"
+    -- Updated to a reliable working ID
+    Wheel.Image = "rbxassetid://6020108599" 
     Wheel.ZIndex = 101
     Wheel.Parent = ColorPopup
 
@@ -819,9 +820,165 @@ function LunarLib:CreateWindow(options)
             Element:Set(default)
             return Element
         end
+
+        function Tab:BuildSettingsTab()
+            local SettingsTab = Window:CreateTab("Settings")
+            
+            local themesList = {}
+            for _, t in ipairs(LunarLib.Themes) do table.insert(themesList, t.Name) end
+
+            SettingsTab:CreateDropdown({
+                Name = "Select Theme",
+                Description = "Changes the UI colors",
+                Options = themesList,
+                Default = Window.CurrentTheme.Name,
+                Callback = function(selected)
+                    for i, t in ipairs(LunarLib.Themes) do
+                        if t.Name == selected then
+                            Window.ThemeIndex = i
+                            Window.CurrentTheme = LunarLib.Themes[i]
+                            Window:ApplyTheme()
+                            break
+                        end
+                    end
+                end
+            })
+
+            local configNameBox
+            local configDropdown
+            
+            local function getConfigs()
+                local list = {}
+                if isfolder and isfolder(Window.Folder) then
+                    for _, file in ipairs(listfiles(Window.Folder)) do
+                        if file:match("%.json$") then
+                            table.insert(list, file:match("([^/%\\]+)%.json$"))
+                        end
+                    end
+                end
+                if #list == 0 then table.insert(list, "None") end
+                return list
+            end
+
+            if makefolder and not isfolder(Window.Folder) then
+                makefolder(Window.Folder)
+            end
+
+            configNameBox = SettingsTab:CreateTextbox({
+                Name = "Config Name",
+                Description = "Enter a name to save your settings under",
+                Placeholder = "Enter name here..."
+            })
+
+            SettingsTab:CreateButton({
+                Name = "Save Config",
+                Description = "Creates a new config file",
+                Callback = function()
+                    local name = configNameBox.Value
+                    if name == "" then return end
+                    
+                    local data = {}
+                    for flagName, element in pairs(Window.Flags) do
+                        if flagName ~= "Select Theme" and flagName ~= "Config Name" and flagName ~= "Select Config" then
+                            data[flagName] = element.Value
+                        end
+                    end
+                    
+                    if writefile then
+                        writefile(Window.Folder .. "/" .. name .. ".json", HttpService:JSONEncode(data))
+                        configDropdown:Refresh(getConfigs())
+                        configDropdown:Set(name)
+                    end
+                end
+            })
+
+            configDropdown = SettingsTab:CreateDropdown({
+                Name = "Select Config",
+                Options = getConfigs(),
+                Callback = function() end
+            })
+
+            SettingsTab:CreateButton({
+                Name = "Overwrite Config",
+                Description = "Saves your current changes to the selected config",
+                Callback = function()
+                    local name = configDropdown.Value
+                    if name == "None" or name == nil or name == "" then return end
+                    
+                    local data = {}
+                    for flagName, element in pairs(Window.Flags) do
+                        if flagName ~= "Select Theme" and flagName ~= "Config Name" and flagName ~= "Select Config" then
+                            data[flagName] = element.Value
+                        end
+                    end
+                    
+                    if writefile then
+                        writefile(Window.Folder .. "/" .. name .. ".json", HttpService:JSONEncode(data))
+                        configDropdown:Refresh(getConfigs())
+                        configDropdown:Set(name)
+                    end
+                end
+            })
+
+            SettingsTab:CreateButton({
+                Name = "Load Config",
+                Description = "Loads settings from the selected config",
+                Callback = function()
+                    local name = configDropdown.Value
+                    if name == "None" or name == nil then return end
+                    
+                    local path = Window.Folder .. "/" .. name .. ".json"
+                    if isfile and isfile(path) then
+                        local success, decoded = pcall(function()
+                            return HttpService:JSONDecode(readfile(path))
+                        end)
+                        if success and type(decoded) == "table" then
+                            for flagName, value in pairs(decoded) do
+                                if Window.Flags[flagName] then
+                                    pcall(function()
+                                        Window.Flags[flagName]:Set(value)
+                                    end)
+                                end
+                            end
+                        end
+                    end
+                end
+            })
+
+            SettingsTab:CreateButton({
+                Name = "Delete Config",
+                Description = "Permanently removes the selected config",
+                Callback = function()
+                    local name = configDropdown.Value
+                    if name == "None" or name == nil then return end
+                    local path = Window.Folder .. "/" .. name .. ".json"
+                    if isfile and isfile(path) and delfile then
+                        delfile(path)
+                        configDropdown:Refresh(getConfigs())
+                        configDropdown:Set(getConfigs()[1])
+                    end
+                end
+            })
+            
+            SettingsTab:CreateButton({
+                Name = "Unload UI",
+                Description = "Destroys the menu entirely",
+                Callback = function()
+                    ScreenGui:Destroy()
+                end
+            })
+            
+            return SettingsTab
+        end
+
         return Tab
     end
-
+    
+    -- Correctly map the BuildSettingsTab to the Window object so the test script works
+    function Window:BuildSettingsTab()
+        return self:CreateTab("Error_DoNotUse"):BuildSettingsTab()
+    end
+    -- Overwriting the weird nested setup to be directly on the window
     function Window:BuildSettingsTab()
         local SettingsTab = self:CreateTab("Settings")
         
