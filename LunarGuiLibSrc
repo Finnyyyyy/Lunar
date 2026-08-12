@@ -568,7 +568,7 @@ function LunarLib:CreateWindow(options)
             arrow.Size = UDim2.new(0, 20, 1, 0)
             arrow.Position = UDim2.new(1, -25, 0, 0)
             arrow.BackgroundTransparency = 1
-            arrow.Text = "â–¼"
+            arrow.Text = "▼"
             arrow.TextSize = 11
             arrow.Parent = ddBtn
             applyCleanTextSettings(arrow)
@@ -599,7 +599,7 @@ function LunarLib:CreateWindow(options)
 
             local function close()
                 isOpen = false
-                arrow.Text = "â–¼"
+                arrow.Text = "▼"
                 local tween = TweenService:Create(listFrame, animInfo, {Size = UDim2.new(1, 0, 0, 0)})
                 tween:Play()
                 tween.Completed:Once(function() if not isOpen then listFrame.Visible = false end end)
@@ -607,7 +607,7 @@ function LunarLib:CreateWindow(options)
 
             ddBtn.MouseButton1Click:Connect(function()
                 isOpen = not isOpen
-                arrow.Text = isOpen and "â–²" or "â–¼"
+                arrow.Text = isOpen and "▲" or "▼"
                 if isOpen then
                     listFrame.Size = UDim2.new(1, 0, 0, 0)
                     listFrame.Visible = true
@@ -865,7 +865,6 @@ function LunarLib:CreateWindow(options)
             Placeholder = "Enter new config name..."
         })
 
-        -- Reusable config saving function
         local function saveConfigData(name)
             local data = {}
             for flagName, element in pairs(self.Flags) do
@@ -927,7 +926,6 @@ function LunarLib:CreateWindow(options)
             end
         })
 
-        -- NEW: Overwrite Config Feature
         SettingsTab:CreateButton({
             Name = "Overwrite Current Config",
             Callback = function()
@@ -958,7 +956,6 @@ function LunarLib:CreateWindow(options)
             end
         })
         
-        -- BUG FIX: Ensure all the buttons we just created get their initial theme colors mapped properly!
         self:ApplyTheme()
         
         return SettingsTab
