@@ -362,6 +362,11 @@ function LunarLib:CreateWindow(options)
             local flag = opts.Flag or title
             local callback = opts.Callback or function() end
 
+            local hasColor = opts.ColorPicker or opts.Color ~= nil
+            local defaultColor = opts.Color or opts.DefaultColor or Color3.fromRGB(255, 255, 255)
+            local colorFlag = opts.ColorFlag or (flag .. "_Color")
+            local colorCallback = opts.ColorCallback or function() end
+
             local tglBtn = Instance.new("TextButton")
             tglBtn.Size = UDim2.new(1, 0, 0, 30)
             tglBtn.BackgroundTransparency = 0.2
@@ -419,6 +424,181 @@ function LunarLib:CreateWindow(options)
             end)
             
             Window.Flags[flag] = Element
+
+            -- Optional Color Wheel Integration
+            if hasColor then
+                local colorDisplay = Instance.new("TextButton")
+                colorDisplay.Size = UDim2.new(0, 20, 0, 16)
+                colorDisplay.Position = UDim2.new(1, -68, 0.5, -8)
+                colorDisplay.BackgroundColor3 = defaultColor
+                colorDisplay.Text = ""
+                colorDisplay.Parent = tglBtn
+                Instance.new("UICorner", colorDisplay).CornerRadius = UDim.new(0, 4)
+                makeStroke(colorDisplay)
+
+                local pickerContainer = Instance.new("Frame")
+                pickerContainer.Size = UDim2.new(1, 0, 0, 0)
+                pickerContainer.BackgroundTransparency = 0.2
+                pickerContainer.ClipsDescendants = true
+                pickerContainer.Visible = false
+                pickerContainer.Parent = Page
+                Instance.new("UICorner", pickerContainer).CornerRadius = UDim.new(0, 6)
+                local pStroke = makeStroke(pickerContainer)
+
+                table.insert(Window.ThemedElements.Bg, pickerContainer)
+                table.insert(Window.ThemedElements.StrokeMain, pStroke)
+
+                local cwheel = Instance.new("ImageButton")
+                cwheel.Size = UDim2.new(0, 90, 0, 90)
+                cwheel.Position = UDim2.new(0, 15, 0.5, -45)
+                cwheel.Image = "rbxassetid://6020299385"
+                cwheel.BackgroundTransparency = 1
+                cwheel.Parent = pickerContainer
+
+                local picker = Instance.new("Frame")
+                picker.Size = UDim2.new(0, 8, 0, 8)
+                picker.AnchorPoint = Vector2.new(0.5, 0.5)
+                picker.Position = UDim2.new(0.5, 0, 0.5, 0)
+                picker.BackgroundColor3 = Color3.new(1, 1, 1)
+                picker.Parent = cwheel
+                Instance.new("UICorner", picker).CornerRadius = UDim.new(1, 0)
+                makeStroke(picker)
+
+                local dp = Instance.new("ImageButton")
+                dp.Size = UDim2.new(0, 16, 0, 90)
+                dp.Position = UDim2.new(0, 120, 0.5, -45)
+                dp.BackgroundColor3 = Color3.new(1, 1, 1)
+                dp.AutoButtonColor = false
+                dp.Parent = pickerContainer
+                Instance.new("UICorner", dp).CornerRadius = UDim.new(0, 4)
+
+                local dpGradient = Instance.new("UIGradient")
+                dpGradient.Rotation = 90
+                dpGradient.Parent = dp
+
+                local dpSlider = Instance.new("Frame")
+                dpSlider.Size = UDim2.new(1, 4, 0, 4)
+                dpSlider.AnchorPoint = Vector2.new(0.5, 0.5)
+                dpSlider.Position = UDim2.new(0.5, 0, 0, 0)
+                dpSlider.BackgroundColor3 = Color3.new(1, 1, 1)
+                dpSlider.Parent = dp
+                Instance.new("UICorner", dpSlider).CornerRadius = UDim.new(1, 0)
+
+                local colorPreview = Instance.new("Frame")
+                colorPreview.Size = UDim2.new(0, 45, 0, 30)
+                colorPreview.Position = UDim2.new(0, 155, 0.5, -15)
+                colorPreview.BackgroundColor3 = defaultColor
+                colorPreview.Parent = pickerContainer
+                Instance.new("UICorner", colorPreview).CornerRadius = UDim.new(0, 6)
+                makeStroke(colorPreview)
+
+                local ColorElement = {Value = defaultColor}
+                local currH, currS, currV = defaultColor:ToHSV()
+
+                local function updatePickerPos()
+                    local angle = currH * math.pi * 2
+                    local radius = (cwheel.AbsoluteSize.X / 2) * currS
+                    local offsetX = radius * math.cos(angle)
+                    local offsetY = radius * math.sin(angle)
+                    picker.Position = UDim2.new(0.5, offsetX, 0.5, -offsetY)
+
+                    dpSlider.Position = UDim2.new(0.5, 0, 1 - currV, 0)
+                    dpGradient.Color = ColorSequence.new(Color3.fromHSV(currH, currS, 1), Color3.new(0, 0, 0))
+                    colorDisplay.BackgroundColor3 = ColorElement.Value
+                    colorPreview.BackgroundColor3 = ColorElement.Value
+                end
+
+                local function setFromHSV(h, s, v)
+                    currH, currS, currV = h, math.clamp(s, 0, 1), math.clamp(v, 0, 1)
+                    ColorElement.Value = Color3.fromHSV(currH, currS, currV)
+                    updatePickerPos()
+                    colorCallback(ColorElement.Value)
+                end
+
+                function ColorElement:Set(color)
+                    if typeof(color) == "Color3" then
+                        ColorElement.Value = color
+                    elseif type(color) == "table" and color.R then
+                        ColorElement.Value = Color3.new(color.R, color.G, color.B)
+                    end
+                    currH, currS, currV = ColorElement.Value:ToHSV()
+                    updatePickerPos()
+                    colorCallback(ColorElement.Value)
+                end
+
+                local isDraggingWheel = false
+                local isDraggingDP = false
+
+                local function updateWheelInput(input)
+                    local center = cwheel.AbsolutePosition + (cwheel.AbsoluteSize / 2)
+                    local mousePos = Vector2.new(input.Position.X, input.Position.Y)
+                    local diff = mousePos - center
+                    local dist = diff.Magnitude
+                    local maxDist = cwheel.AbsoluteSize.X / 2
+
+                    local h = (math.atan2(-diff.Y, diff.X) / (math.pi * 2)) % 1
+                    local s = math.clamp(dist / maxDist, 0, 1)
+                    setFromHSV(h, s, currV)
+                end
+
+                local function updateDPInput(input)
+                    local topY = dp.AbsolutePosition.Y
+                    local height = dp.AbsoluteSize.Y
+                    local v = 1 - math.clamp((input.Position.Y - topY) / height, 0, 1)
+                    setFromHSV(currH, currS, v)
+                end
+
+                cwheel.InputBegan:Connect(function(input)
+                    if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+                        isDraggingWheel = true
+                        updateWheelInput(input)
+                    end
+                end)
+
+                dp.InputBegan:Connect(function(input)
+                    if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+                        isDraggingDP = true
+                        updateDPInput(input)
+                    end
+                end)
+
+                UserInputService.InputChanged:Connect(function(input)
+                    if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
+                        if isDraggingWheel then
+                            updateWheelInput(input)
+                        elseif isDraggingDP then
+                            updateDPInput(input)
+                        end
+                    end
+                end)
+
+                UserInputService.InputEnded:Connect(function(input)
+                    if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+                        isDraggingWheel = false
+                        isDraggingDP = false
+                    end
+                end)
+
+                local isOpen = false
+                local animInfo = TweenInfo.new(0.3, Enum.EasingStyle.Quart, Enum.EasingDirection.Out)
+
+                colorDisplay.MouseButton1Click:Connect(function()
+                    isOpen = not isOpen
+                    if isOpen then
+                        pickerContainer.Visible = true
+                        TweenService:Create(pickerContainer, animInfo, {Size = UDim2.new(1, 0, 0, 110)}):Play()
+                        updatePickerPos()
+                    else
+                        local tween = TweenService:Create(pickerContainer, animInfo, {Size = UDim2.new(1, 0, 0, 0)})
+                        tween:Play()
+                        tween.Completed:Once(function() if not isOpen then pickerContainer.Visible = false end end)
+                    end
+                end)
+
+                Window.Flags[colorFlag] = ColorElement
+                ColorElement:Set(defaultColor)
+            end
+
             Window:ApplyTheme()
             fire()
             
@@ -693,6 +873,13 @@ function LunarLib:CreateWindow(options)
             Placeholder = "Enter config name..."
         })
 
+        local function formatFlagValue(val)
+            if typeof(val) == "Color3" then
+                return {R = val.R, G = val.G, B = val.B}
+            end
+            return val
+        end
+
         SettingsTab:CreateButton({
             Name = "Save Config",
             Callback = function()
@@ -702,7 +889,7 @@ function LunarLib:CreateWindow(options)
                 local data = {}
                 for flagName, element in pairs(self.Flags) do
                     if flagName ~= "Select Theme" and flagName ~= "Config Name" and flagName ~= "Select Config" then
-                        data[flagName] = element.Value
+                        data[flagName] = formatFlagValue(element.Value)
                     end
                 end
                 
@@ -729,7 +916,7 @@ function LunarLib:CreateWindow(options)
                 local data = {}
                 for flagName, element in pairs(self.Flags) do
                     if flagName ~= "Select Theme" and flagName ~= "Config Name" and flagName ~= "Select Config" then
-                        data[flagName] = element.Value
+                        data[flagName] = formatFlagValue(element.Value)
                     end
                 end
                 
@@ -793,3 +980,4 @@ function LunarLib:CreateWindow(options)
 end
 
 return LunarLib
+
